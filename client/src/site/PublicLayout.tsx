@@ -3,11 +3,11 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { ScrollProgress, BackToTop } from '../components/ux';
+import { ScrollProgress, BackToTop, PageLoader } from '../components/ux';
 import { useSiteData } from '../lib/queries';
 
 export function PublicLayout() {
-  const { data } = useSiteData();
+  const { data, isLoading } = useSiteData();
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
 
@@ -15,6 +15,9 @@ export function PublicLayout() {
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [pathname]);
+
+  // First visit only — afterwards the query is cached, so navigation stays instant.
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="flex min-h-screen flex-col bg-bg">

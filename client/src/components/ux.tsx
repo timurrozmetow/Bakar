@@ -2,6 +2,23 @@ import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import { useLocale } from '../lib/i18n';
+import { BrandMark } from './BrandMark';
+
+/**
+ * Full-screen brand loader, shown while a route chunk or the site data is still
+ * loading. Ported from the original Bakar design (pulsing mark + progress bar).
+ */
+export function PageLoader() {
+  return (
+    <div className="bk-loader" role="status" aria-live="polite">
+      <BrandMark className="bk-loader-mark" />
+      <div className="bk-loader-bar">
+        <i />
+      </div>
+      <div className="bk-loader-word">BAKAR</div>
+    </div>
+  );
+}
 
 /** Shimmer placeholder block. */
 export function Skeleton({ className }: { className?: string }) {

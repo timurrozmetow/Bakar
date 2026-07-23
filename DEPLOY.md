@@ -210,7 +210,7 @@ sudo nginx -t && sudo systemctl reload nginx
 ```bash
 sudo certbot certonly --webroot -w /var/www/certbot \
   -d bakar-seeds.com -d www.bakar-seeds.com \
-  --email ВАШ_EMAIL --agree-tos --no-eff-email \
+  --email vps399136@gmail.com --agree-tos --no-eff-email \
   --deploy-hook "systemctl reload nginx"
 ```
 

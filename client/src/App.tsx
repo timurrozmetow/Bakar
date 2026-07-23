@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './site/PublicLayout';
 import { Home } from './site/Home';
 import { NotFound } from './site/NotFound';
+import { PageLoader } from './components/ux';
 
 // Secondary public pages and the whole admin load on demand.
 const Products = lazy(() => import('./site/Products').then((m) => ({ default: m.Products })));
@@ -14,13 +15,9 @@ const Certificates = lazy(() => import('./site/Certificates').then((m) => ({ def
 const Contacts = lazy(() => import('./site/Contacts').then((m) => ({ default: m.Contacts })));
 const AdminApp = lazy(() => import('./admin/AdminApp'));
 
-function RouteFallback() {
-  return <div className="min-h-[60vh]" />;
-}
-
 export function App() {
   return (
-    <Suspense fallback={<RouteFallback />}>
+    <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public website */}
         <Route element={<PublicLayout />}>

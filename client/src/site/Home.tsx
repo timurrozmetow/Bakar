@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Quote } from 'lucide-react';
 import { useSiteData } from '../lib/queries';
@@ -21,6 +21,9 @@ export function Home() {
   const stats = (data?.settings.home_stats ?? []) as StatItem[];
   const marquee = data?.settings.marquee?.words ?? ['BAKAR', 'Halal', 'Non-GMO', 'Gluten-free', 'Türkmenistan'];
   const partner = data?.settings.partner_cta;
+
+  // 5 repeats per half — wide enough that the strip never runs out on any screen.
+  const marqueeHalf = useMemo(() => Array.from({ length: 5 }, () => marquee).flat(), [marquee]);
 
   // hero carousel
   const [slide, setSlide] = useState(0);
@@ -89,9 +92,14 @@ export function Home() {
       </section>
 
       {/* ── Marquee ───────────────────────────────────────────── */}
+      {/* One half = the words repeated 5×; the track renders two identical
+          halves and slides by -50%, so the loop is seamless and never empties. */}
       <div className="bk-marq">
-        <div className="bk-marq-track">
-          {[...marquee, ...marquee].map((w, i) => (
+        <div
+          className="bk-marq-track"
+          style={{ animationDuration: `${Math.max(30, marqueeHalf.length * 2.2)}s` }}
+        >
+          {[...marqueeHalf, ...marqueeHalf].map((w, i) => (
             <span key={i} className="inline-flex items-center gap-16">
               {w}
               <span style={{ opacity: 0.5 }}>·</span>
