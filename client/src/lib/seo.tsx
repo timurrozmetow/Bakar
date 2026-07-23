@@ -108,7 +108,9 @@ export function useHead(opts: { title: string; description?: string; lang?: stri
     upsertMeta('property', 'og:title', title);
     upsertMeta('property', 'og:site_name', SITE_NAME);
     upsertMeta('property', 'og:type', 'website');
-    upsertMeta('property', 'og:image', '/og-image.svg');
+    // Absolute: Open Graph consumers do not resolve relative image paths.
+    upsertMeta('property', 'og:image', `${window.location.origin}/og-image.png`);
+    upsertMeta('property', 'og:url', window.location.href);
     upsertMeta('name', 'twitter:card', 'summary_large_image');
     upsertMeta('name', 'theme-color', '#10794a');
     if (description) {

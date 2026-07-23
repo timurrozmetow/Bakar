@@ -38,7 +38,9 @@ export function Header() {
         }}
       >
         <Link to="/" className="mr-auto flex items-center gap-2.5 pl-1.5 font-heading text-[21px] font-extrabold tracking-tight">
-          <BrandMark className="h-7 w-7 text-accent" />
+          {/* 32px, not 28: the real mark has eight petals plus the chevron and
+              turns into a blob at the size the simpler drawn logo tolerated. */}
+          <BrandMark className="h-8 w-8 text-accent" />
           BAKAR
         </Link>
 

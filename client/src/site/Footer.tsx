@@ -13,7 +13,9 @@ export function Footer({ data }: { data?: SiteData }) {
       <div className="bk-wrap grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-2.5 text-2xl font-extrabold tracking-tight">
-            <BrandMark className="h-8 w-8" style={{ color: 'var(--bk-green)' }} />
+            {/* White, matching the wordmark beside it: the dark brand green sits
+                too close to the footer background to stay legible. */}
+            <BrandMark className="h-8 w-8" style={{ color: '#e9e8e2' }} />
             BAKAR
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">

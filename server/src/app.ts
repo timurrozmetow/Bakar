@@ -62,11 +62,14 @@ export function createApp() {
       try {
         const html = readFileSync(indexFile, 'utf8');
         const [{ meta, jsonLd }, site] = await Promise.all([metaForPath(req.path), loadSiteData()]);
+        // Open Graph needs absolute URLs; prefer the configured canonical origin
+        // so a request arriving on another host still advertises the real one.
+        const origin = (process.env.PUBLIC_SITE_URL ?? `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
         // The shell carries live content, so it must be revalidated every time.
         res.setHeader('Cache-Control', 'no-cache');
         res
           .type('html')
-          .send(renderShell({ html, dist: CLIENT_DIST, pathname: req.path, meta, jsonLd, site }));
+          .send(renderShell({ html, dist: CLIENT_DIST, pathname: req.path, origin, meta, jsonLd, site }));
       } catch (err) {
         next(err);
       }

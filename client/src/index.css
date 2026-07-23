@@ -223,9 +223,34 @@ a {
     border-radius: var(--r-lg);
     box-shadow: var(--sh-sm);
   }
+  /* Brand mark — the supplied logo, tinted through a CSS mask.
+     Masking rather than a plain <img> so the one monochrome file works
+     everywhere the design needs it: green in the header, white on the dark
+     footer, accent in the loader. The colour comes from `currentColor`, so
+     every call site keeps styling it with an ordinary text-colour class.
+     Without mask support the file still shows as a normal background image —
+     black instead of tinted, but never a coloured square. */
   .bk-mark {
-    fill: currentColor;
     display: block;
+    background-image: url('/logo/bakar-mark.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+@supports (mask-image: url('/logo/bakar-mark.png')) or (-webkit-mask-image: url('/logo/bakar-mark.png')) {
+  .bk-mark {
+    background-image: none;
+    background-color: currentColor;
+    -webkit-mask-image: url('/logo/bakar-mark.png');
+    mask-image: url('/logo/bakar-mark.png');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 }
 
@@ -276,8 +301,8 @@ a {
   gap: 24px;
 }
 .bk-loader-mark {
-  width: 74px;
-  height: 78px;
+  width: 78px;
+  height: 78px; /* the mark is square, unlike the SVG it replaced */
   color: var(--bk-accent);
   animation: bk-pulse 1.1s var(--bk-ease) infinite;
 }

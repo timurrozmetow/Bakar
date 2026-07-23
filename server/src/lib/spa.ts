@@ -85,33 +85,45 @@ export async function metaForPath(pathname: string): Promise<{ meta: Meta; jsonL
 }
 
 // ── Critical CSS ────────────────────────────────────────────────────────────
-// The built stylesheet is one small file (~26 KB raw / ~8 KB gzipped). Left as
+// The built stylesheet is one small file (~27 KB raw / ~7 KB gzipped). Left as
 // a <link> it blocks the first paint for a whole extra round trip, so it is
-// folded into the HTML instead. Read once per process — a new build means a new
-// hashed filename and a PM2 restart, which re-reads it.
+// folded into the HTML instead.
+//
+// The cache is keyed by the stylesheet's hashed href, not merely filled once:
+// if the process ever sees an index.html from a newer build, a href-blind cache
+// would keep looking for a tag that is no longer there and silently stop
+// inlining — the page would still render, just a round trip slower, with
+// nothing to show for it in the logs.
 
 const MAX_INLINE_CSS = 60 * 1024;
 const LINK_TAG = /<link\b[^>]*>/gi;
 
-let cssCache: { tag: string; css: string } | null | undefined;
+let cssCache: { href: string; tag: string; css: string | null } | null = null;
 
-function findStylesheet(html: string, dist: string): { tag: string; css: string } | null {
+function findStylesheetTag(html: string): { tag: string; href: string } | null {
   for (const tag of html.match(LINK_TAG) ?? []) {
     if (!/rel=["']stylesheet["']/i.test(tag)) continue;
     const href = /href=["']([^"']+)["']/i.exec(tag)?.[1];
-    if (!href?.startsWith('/')) continue;
-    const file = path.join(dist, href);
-    if (!existsSync(file)) continue;
-    const css = readFileSync(file, 'utf8');
-    if (css.length > MAX_INLINE_CSS) return null;
-    return { tag, css };
+    if (href?.startsWith('/')) return { tag, href };
   }
   return null;
 }
 
 function inlineCss(html: string, dist: string): string {
-  if (cssCache === undefined) cssCache = findStylesheet(html, dist);
-  if (!cssCache) return html;
+  const found = findStylesheetTag(html);
+  if (!found) return html;
+
+  if (cssCache?.href !== found.href) {
+    const file = path.join(dist, found.href);
+    let css: string | null = null;
+    if (existsSync(file)) {
+      const contents = readFileSync(file, 'utf8');
+      if (contents.length <= MAX_INLINE_CSS) css = contents;
+    }
+    cssCache = { href: found.href, tag: found.tag, css };
+  }
+
+  if (!cssCache.css) return html;
   // A literal </style> cannot occur inside CSS, so no escaping is needed.
   return html.replace(cssCache.tag, `<style>${cssCache.css}</style>`);
 }
@@ -163,11 +175,12 @@ export function renderShell(opts: {
   html: string;
   dist: string;
   pathname: string;
+  origin: string;
   meta: Meta;
   jsonLd?: object;
   site: SitePayload;
 }): string {
-  const { dist, pathname, meta, jsonLd, site } = opts;
+  const { dist, pathname, origin, meta, jsonLd, site } = opts;
 
   const tags = [
     `<title>${esc(meta.title)}</title>`,
@@ -176,6 +189,13 @@ export function renderShell(opts: {
     `<meta property="og:description" content="${esc(meta.description)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="${SITE}" />`,
+    // Absolute URLs: Facebook, Telegram and X do not resolve relative paths,
+    // and none of them render an SVG preview — hence the PNG.
+    `<meta property="og:url" content="${esc(origin + pathname)}" />`,
+    `<meta property="og:image" content="${esc(origin)}/og-image.png" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
     pathname === '/' ? heroPreload(site) : '',
     `<script type="application/ld+json" data-seo="org">${safeJson(ORGANIZATION)}</script>`,
     // data-seo="route" is the handle the client updates on in-app navigation,
