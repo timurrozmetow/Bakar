@@ -114,9 +114,6 @@ export function ProductDetail() {
           <Reveal>
             <span className="text-sm font-bold uppercase tracking-wider text-accent">{categoryName}</span>
             <h1 className="bk-h2">{name}</h1>
-            {product.name.tm && product.name.tm !== name && (
-              <div className="mt-1 text-sm font-semibold uppercase tracking-wider text-muted">{product.name.tm}</div>
-            )}
 
             {description && <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">{description}</p>}
 

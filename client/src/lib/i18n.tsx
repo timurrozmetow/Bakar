@@ -9,7 +9,23 @@ const DICT = {
   'nav.certs': { tm: 'Şahadatnamalar', ru: 'Сертификаты', en: 'Certificates' },
   'nav.contacts': { tm: 'Habarlaşmak', ru: 'Контакты', en: 'Contacts' },
   'cta.partner': { tm: 'Hyzmatdaş bolmak', ru: 'Стать партнёром', en: 'Become a partner' },
+  'cta.partnerLead': {
+    tm: 'Dükanlary, ulgamlary we distribýutorlary hyzmatdaşlyga çagyrýarys.',
+    ru: 'Приглашаем магазины, сети и дистрибьюторов к сотрудничеству.',
+    en: 'We welcome shops, chains and distributors.',
+  },
   'cta.viewProducts': { tm: 'Önümleri görmek', ru: 'Смотреть продукцию', en: 'View products' },
+  // footer
+  'footer.sections': { tm: 'Bölümler', ru: 'Разделы', en: 'Sections' },
+  'footer.lead': {
+    tm: 'Ýönekeý, ygtybarly önümler — türkmen saçagy üçin.',
+    ru: 'Простые, надёжные продукты — для туркменского стола.',
+    en: 'Simple, dependable staples for the Turkmen table.',
+  },
+  'badge.halal': { tm: 'Halal', ru: 'Халяль', en: 'Halal' },
+  'badge.nonGmo': { tm: 'GMO-syz', ru: 'Без ГМО', en: 'Non-GMO' },
+  'badge.glutenFree': { tm: 'Glýutensiz', ru: 'Без глютена', en: 'Gluten-free' },
+  'badge.country': { tm: 'Türkmenistan', ru: 'Туркменистан', en: 'Turkmenistan' },
   'section.assortment': { tm: 'Görnüşler', ru: 'Ассортимент', en: 'Assortment' },
   'section.assortmentLead': {
     tm: 'Alty kategoriýa, bir hil standarty.',
@@ -31,7 +47,7 @@ const DICT = {
   'products.title': { tm: 'Ähli Bakar önümleri', ru: 'Вся продукция Bakar', en: 'All Bakar products' },
   'products.all': { tm: 'Hemmesi', ru: 'Все', en: 'All' },
   'products.empty': { tm: 'Önüm tapylmady', ru: 'Товары не найдены', en: 'No products found' },
-  'products.search': { tm: 'Önüm gözlemek…', ru: 'Поиск по товарам…', en: 'Search products…' },
+  'products.more': { tm: 'Giňişleýin', ru: 'Подробнее', en: 'Details' },
   'products.backToCatalog': { tm: 'Ähli önümler', ru: 'Вся продукция', en: 'All products' },
   'products.packaging': { tm: 'Gaplama', ru: 'Фасовка', en: 'Packaging' },
   'products.category': { tm: 'Kategoriýa', ru: 'Категория', en: 'Category' },

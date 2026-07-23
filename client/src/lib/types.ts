@@ -17,6 +17,20 @@ export const LOCALE_NAME: Record<Locale, string> = {
 
 export const emptyI18n = (): I18nText => ({ tm: '', ru: '', en: '' });
 
+/**
+ * Coerces a value that may still be a plain string into a trilingual field.
+ * The marquee originally stored bare strings; rows saved before that change
+ * are widened here instead of being migrated in the database.
+ */
+export function toI18n(value: unknown): I18nText {
+  if (typeof value === 'string') return { tm: value, ru: value, en: value };
+  if (value && typeof value === 'object') {
+    const v = value as Partial<I18nText>;
+    return { tm: v.tm ?? '', ru: v.ru ?? '', en: v.en ?? '' };
+  }
+  return emptyI18n();
+}
+
 export interface Banner {
   id: number;
   title: I18nText;
@@ -115,7 +129,8 @@ export interface SiteData {
       instagram?: string;
       telegram?: string;
     };
-    marquee?: { words: string[] };
+    /** Words may be legacy plain strings — run them through toI18n(). */
+    marquee?: { words: (I18nText | string)[] };
     footer?: { lead: I18nText };
     partner_cta?: { heading: I18nText; body: I18nText };
     [key: string]: unknown;

@@ -63,7 +63,7 @@ export function Contacts() {
           </div>
 
           {/* form */}
-          <div className="rounded-[24px] border border-line bg-surface p-7 shadow-sm">
+          <div className="rounded-[24px] border border-line bg-surface p-7">
             {state === 'sent' ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <CheckCircle2 className="h-14 w-14 text-accent" />

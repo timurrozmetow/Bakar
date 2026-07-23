@@ -17,14 +17,14 @@ export function Footer({ data }: { data?: SiteData }) {
             BAKAR
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
-            {tt(footer?.lead) || 'Простые, надёжные продукты — для туркменского стола.'}
+            {tt(footer?.lead) || ui('footer.lead')}
           </p>
         </div>
 
         <div>
           {/* h2, not h5: the page goes h1 → h2 and skipping levels breaks the
               document outline for screen readers. Size comes from the class. */}
-          <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">Разделы</h2>
+          <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">{ui('footer.sections')}</h2>
           <ul className="space-y-3 text-sm text-white/80">
             <li><Link to="/products" className="hover:text-white">{ui('nav.products')}</Link></li>
             <li><Link to="/about" className="hover:text-white">{ui('nav.about')}</Link></li>
@@ -44,8 +44,8 @@ export function Footer({ data }: { data?: SiteData }) {
       </div>
       <div className="border-t border-white/10">
         <div className="bk-wrap flex flex-wrap items-center justify-between gap-3 py-6 text-xs text-white/50">
-          <span>© {new Date().getFullYear()} BAKAR. Türkmenistan.</span>
-          <span>Halal · Non-GMO · Gluten-free</span>
+          <span>© {new Date().getFullYear()} BAKAR. {ui('badge.country')}.</span>
+          <span>{[ui('badge.halal'), ui('badge.nonGmo'), ui('badge.glutenFree')].join(' · ')}</span>
         </div>
       </div>
     </footer>

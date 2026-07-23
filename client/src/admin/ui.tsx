@@ -18,7 +18,7 @@ export function Button({
   loading?: boolean;
 }) {
   const variants = {
-    primary: 'bg-accent text-on-accent hover:opacity-90 shadow-sm',
+    primary: 'bg-accent text-on-accent hover:opacity-90',
     ghost: 'border border-line bg-surface text-ink hover:bg-surface-2',
     danger: 'bg-red-600 text-white hover:bg-red-700',
     subtle: 'text-muted hover:text-ink hover:bg-surface-2',
@@ -77,7 +77,7 @@ export function Field({ label, hint, error, children }: { label?: string; hint?:
 }
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn('rounded-[18px] border border-line bg-surface p-5 shadow-sm', className)}>{children}</div>;
+  return <div className={cn('rounded-[18px] border border-line bg-surface p-5', className)}>{children}</div>;
 }
 
 export function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label?: string }) {

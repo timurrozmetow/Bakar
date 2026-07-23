@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from '../lib/motion';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { ScrollProgress, BackToTop, PageLoader } from '../components/ux';
+import { BackToTop, PageLoader } from '../components/ux';
 import { useSiteData } from '../lib/queries';
 
 export function PublicLayout() {
@@ -21,7 +21,6 @@ export function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg">
-      <ScrollProgress />
       <Header />
       <main className="flex-1">
         <motion.div

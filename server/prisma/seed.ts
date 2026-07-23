@@ -304,7 +304,18 @@ async function main() {
       instagram: '',
       telegram: '',
     },
-    marquee: { words: ['BAKAR', 'ýokary hilli', 'Halal', 'Non-GMO', 'Gluten-free', 'Türkmenistan'] },
+    // Trilingual: the strip re-renders when the visitor switches language.
+    // "BAKAR" is the brand and stays the same in all three.
+    marquee: {
+      words: [
+        t('BAKAR', 'BAKAR', 'BAKAR'),
+        t('ýokary hilli', 'высокое качество', 'high quality'),
+        t('Halal', 'Халяль', 'Halal'),
+        t('GMO-syz', 'без ГМО', 'Non-GMO'),
+        t('Glýutensiz', 'без глютена', 'Gluten-free'),
+        t('Türkmenistan', 'Туркменистан', 'Turkmenistan'),
+      ],
+    },
     footer: {
       lead: t(
         'Ýönekeý, ynamdar önümler — türkmen supralary üçin.',

@@ -21,7 +21,7 @@ function StatCard({
   return (
     <Link
       to={to}
-      className="rounded-[18px] border border-line bg-surface p-5 shadow-sm transition hover:shadow-md"
+      className="rounded-[18px] border border-line bg-surface p-5 transition hover:border-accent"
     >
       <div className="flex items-start justify-between gap-3">
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-[12px] bg-accent-soft text-accent">

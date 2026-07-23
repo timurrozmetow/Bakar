@@ -34,7 +34,6 @@ export function Header() {
         style={{
           background: solid ? 'var(--bk-surface)' : 'color-mix(in srgb, var(--bk-surface) 82%, transparent)',
           borderColor: 'var(--bk-line)',
-          boxShadow: solid ? 'var(--sh)' : 'var(--sh-sm)',
           backdropFilter: 'blur(10px)',
         }}
       >
@@ -90,7 +89,7 @@ export function Header() {
 
       {/* mobile menu */}
       {open && (
-        <div className="mx-auto mt-2 max-w-[1160px] rounded-2xl border border-line bg-surface p-3 shadow md:hidden">
+        <div className="mx-auto mt-2 max-w-[1160px] rounded-2xl border border-line bg-surface p-3 md:hidden">
           <nav className="flex flex-col gap-1">
             {LINKS.map((l) => (
               <NavLink

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, X, Save } from 'lucide-react';
 import { useSetting } from '../queries';
-import { emptyI18n, type I18nText, type StatItem } from '../../lib/types';
+import { emptyI18n, toI18n, type I18nText, type StatItem } from '../../lib/types';
 import { Button, Card, Field, Input, PageHeader } from '../ui';
 import { TranslatableField } from '../components';
 
@@ -153,21 +153,40 @@ export function PagesPage() {
           )}
         />
 
+        {/* Words are trilingual. Anything saved before that change comes back as
+            a bare string, so each word is widened with toI18n() on load. */}
         <Block
           title="Бегущая строка"
           sectionKey="marquee"
-          initial={{ words: [] as string[] }}
+          initial={{ words: [] as (I18nText | string)[] }}
           render={(d, set) => (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {d.words.map((w, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <Input value={w} onChange={(e) => { const words = [...d.words]; words[i] = e.target.value; set({ ...d, words }); }} />
-                  <button type="button" onClick={() => set({ ...d, words: d.words.filter((_, j) => j !== i) })} className="rounded-lg p-2 text-muted hover:text-red-600">
-                    <X className="h-4 w-4" />
-                  </button>
+                <div key={i} className="rounded-[12px] border border-line p-3">
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1">
+                      <TranslatableField
+                        label={`Слово ${i + 1}`}
+                        value={toI18n(w)}
+                        onChange={(next: I18nText) => {
+                          const words = [...d.words];
+                          words[i] = next;
+                          set({ ...d, words });
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => set({ ...d, words: d.words.filter((_, j) => j !== i) })}
+                      className="rounded-lg p-2 text-muted hover:text-red-600"
+                      aria-label="Удалить слово"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
-              <Button variant="ghost" size="sm" onClick={() => set({ ...d, words: [...d.words, ''] })}>
+              <Button variant="ghost" size="sm" onClick={() => set({ ...d, words: [...d.words, emptyI18n()] })}>
                 <Plus className="h-4 w-4" /> Добавить слово
               </Button>
             </div>

@@ -2,45 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Manrope, self-hosted ────────────────────────────────────────────────
-   Served from our own origin instead of fonts.googleapis.com: Google's CSS
-   was a render-blocking request that also forced a second connection to
-   fonts.gstatic.com, adding ~700 ms to the critical path. One variable file
-   per subset covers every weight we use (400–800). Only the three subsets
-   the site actually needs are shipped — Latin (+ext, for ä/ň/ş/ž) and
-   Cyrillic; Greek, Vietnamese and Cyrillic-ext are dropped. */
+/* ── Stolzl, self-hosted ─────────────────────────────────────────────────
+   Three static weights, converted from the supplied OTFs and subset to the
+   only characters this site can render: Latin, Latin Extended-A (ň ş ž),
+   Cyrillic and punctuation. That drops each file from ~57 KB to ~23 KB.
+
+   Stolzl ships no 600 or 800, so those weights are mapped onto the nearest
+   real file rather than left to the browser, which would otherwise smear the
+   outlines into a synthetic bold. */
 @font-face {
-  font-family: 'Manrope';
+  font-family: 'Stolzl';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 400;
   font-display: swap;
-  src: url('/fonts/manrope-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
-    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('/fonts/stolzl-regular.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Manrope';
+  font-family: 'Stolzl';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 500;
   font-display: swap;
-  src: url('/fonts/manrope-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
-    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
-    U+A720-A7FF;
+  src: url('/fonts/stolzl-medium.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Manrope';
+  font-family: 'Stolzl';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 600; /* semibold → Medium */
   font-display: swap;
-  src: url('/fonts/manrope-cyrillic.woff2') format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  src: url('/fonts/stolzl-medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Stolzl';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/stolzl-bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Stolzl';
+  font-style: normal;
+  font-weight: 800; /* extrabold → Bold */
+  font-display: swap;
+  src: url('/fonts/stolzl-bold.woff2') format('woff2');
 }
 
 /* ── Bakar design tokens (ported from the Claude Design макет) ───────── */
 :root {
-  --font-heading: 'Manrope', system-ui, sans-serif;
-  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-heading: 'Stolzl', system-ui, sans-serif;
+  --font-body: 'Stolzl', system-ui, sans-serif;
   --bk-green: #10794a;
   --bk-amber: #dd9a2b;
   --bk-teal: #1f9b95;
@@ -60,9 +69,12 @@
   --r-sm: 12px;
   --r-btn: 14px;
   --r-pill: 999px;
-  --sh-sm: 0 2px 12px rgba(20, 18, 16, 0.06);
-  --sh: 0 14px 38px rgba(20, 18, 16, 0.1);
-  --sh-lg: 0 34px 80px rgba(20, 18, 16, 0.13);
+  /* The site is deliberately flat: depth comes from the border and the surface
+     colours, not from drop shadows. Kept as tokens so nothing has to be hunted
+     down if elevation is ever wanted back. */
+  --sh-sm: none;
+  --sh: none;
+  --sh-lg: none;
   --bk-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --wrap: 1280px;
 }
@@ -203,7 +215,6 @@ a {
   }
   .bk-btn-white:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
   }
 
   .bk-card {
@@ -344,31 +355,3 @@ a {
   object-position: center;
 }
 
-/* reading-progress bar */
-/* Driven by the scroll timeline where available, which keeps it off the main
-   thread entirely; ux.tsx supplies a reflow-free JS fallback elsewhere. */
-.bk-scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 60;
-  height: 3px;
-  background: var(--bk-accent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-}
-@supports (animation-timeline: scroll()) {
-  .bk-scroll-progress {
-    animation: bk-scroll-progress linear both;
-    animation-timeline: scroll(root block);
-  }
-}
-@keyframes bk-scroll-progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { AnimatePresence, motion } from '../lib/motion';
 import { useLocale } from '../lib/i18n';
@@ -43,55 +43,6 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
   );
 }
 
-/**
- * Thin accent progress bar at the very top, tied to scroll position.
- *
- * Where `animation-timeline: scroll()` is supported the bar is driven entirely
- * by CSS on the compositor and no JavaScript runs at all. The fallback below
- * never reads a layout property inside the scroll handler — page height is
- * measured only on resize — so scrolling cannot trigger a forced reflow.
- */
-export function ScrollProgress() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (typeof CSS !== 'undefined' && CSS.supports?.('animation-timeline', 'scroll()')) return;
-    const el = ref.current;
-    if (!el) return;
-
-    let max = 0;
-    let frame = 0;
-
-    const measure = () => {
-      max = document.documentElement.scrollHeight - window.innerHeight;
-    };
-    const paint = () => {
-      frame = 0;
-      el.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(paint);
-    };
-
-    measure();
-    paint();
-    const ro = new ResizeObserver(() => {
-      measure();
-      paint();
-    });
-    ro.observe(document.documentElement);
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  return <div ref={ref} className="bk-scroll-progress" aria-hidden />;
-}
-
 /** Floating "back to top" button that appears after scrolling. */
 export function BackToTop() {
   const { ui } = useLocale();
@@ -112,7 +63,7 @@ export function BackToTop() {
           transition={{ duration: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label={ui('a11y.backTop')}
-          className="fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full bg-accent text-on-accent shadow-lg transition hover:-translate-y-0.5"
+          className="fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full bg-accent text-on-accent transition hover:-translate-y-0.5"
         >
           <ArrowUp className="h-5 w-5" />
         </motion.button>

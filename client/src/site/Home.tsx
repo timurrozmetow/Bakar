@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Quote } from 'lucide-react';
 import { useSiteData } from '../lib/queries';
 import { useLocale } from '../lib/i18n';
-import type { StatItem } from '../lib/types';
+import { toI18n, type StatItem } from '../lib/types';
 import { Seo } from '../lib/seo';
 import { Reveal, Stagger, StaggerItem, motion, useReducedMotion } from '../lib/motion';
 import { CardGridSkeleton, Skeleton } from '../components/ux';
@@ -18,11 +18,21 @@ export function Home() {
   const reviews = data?.reviews ?? [];
   const certs = data?.certificates ?? [];
   const stats = (data?.settings.home_stats ?? []) as StatItem[];
-  const marquee = data?.settings.marquee?.words ?? ['BAKAR', 'Halal', 'Non-GMO', 'Gluten-free', 'Türkmenistan'];
   const partner = data?.settings.partner_cta;
 
+  // Marquee words are trilingual and re-resolve when the language changes.
   // 5 repeats per half — wide enough that the strip never runs out on any screen.
-  const marqueeHalf = useMemo(() => Array.from({ length: 5 }, () => marquee).flat(), [marquee]);
+  const marqueeHalf = useMemo(() => {
+    const stored = data?.settings.marquee?.words;
+    const words = (stored?.length ? stored.map((w) => tt(toI18n(w))) : [
+      'BAKAR',
+      ui('badge.halal'),
+      ui('badge.nonGmo'),
+      ui('badge.glutenFree'),
+      ui('badge.country'),
+    ]).filter(Boolean);
+    return Array.from({ length: 5 }, () => words).flat();
+  }, [data?.settings.marquee?.words, tt, ui]);
 
   // hero carousel
   const [slide, setSlide] = useState(0);
@@ -64,7 +74,9 @@ export function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="bk-kick" style={{ color: '#bfe6cf' }}>{active.title.tm || 'BAKAR'}</span>
+              {/* The brand, not the Turkmen title: under a Russian or English
+                  locale a Turkmen kicker read as an untranslated leftover. */}
+              <span className="bk-kick" style={{ color: '#bfe6cf' }}>BAKAR</span>
               <h1 className="mt-3 font-heading text-[clamp(36px,7vw,84px)] font-extrabold leading-[1.02] tracking-tight">
                 {tt(active.title)}
               </h1>
@@ -136,7 +148,10 @@ export function Home() {
           <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((c) => (
               <StaggerItem key={c.id}>
-                <Link to="/products" className="bk-card group block h-full overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow">
+                <Link
+                  to={`/products#${c.slug}`}
+                  className="bk-card group block h-full overflow-hidden transition duration-300 hover:-translate-y-1 hover:border-accent"
+                >
                   <div className="aspect-[4/3] overflow-hidden bg-surface-2">
                     <Img
                       src={c.image}
@@ -146,8 +161,7 @@ export function Home() {
                     />
                   </div>
                   <div className="p-6">
-                    <div className="text-sm font-bold uppercase tracking-wider text-accent">{c.name.tm}</div>
-                    <div className="mt-1 font-heading text-2xl font-extrabold tracking-tight text-ink">{tt(c.name)}</div>
+                    <div className="font-heading text-2xl font-extrabold tracking-tight text-ink">{tt(c.name)}</div>
                     <p className="mt-2 text-sm leading-relaxed text-muted">{tt(c.tagline)}</p>
                     <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent">
                       {ui('cta.viewProducts')} <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -222,7 +236,7 @@ export function Home() {
               {tt(partner?.heading) || ui('cta.partner')}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base opacity-90 sm:text-lg">
-              {tt(partner?.body) || 'Приглашаем магазины, сети и дистрибьюторов к сотрудничеству.'}
+              {tt(partner?.body) || ui('cta.partnerLead')}
             </p>
             <Link to="/contacts" className="bk-btn bk-btn-white mt-8">
               {ui('cta.partner')} <ArrowRight />

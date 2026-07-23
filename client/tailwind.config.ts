@@ -20,8 +20,8 @@ export default {
         line: 'var(--bk-line)',
       },
       fontFamily: {
-        sans: ['Manrope', 'system-ui', 'sans-serif'],
-        heading: ['Manrope', 'system-ui', 'sans-serif'],
+        sans: ['Stolzl', 'system-ui', 'sans-serif'],
+        heading: ['Stolzl', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         pill: '999px',
