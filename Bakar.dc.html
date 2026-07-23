@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-aaba4b24-4ebc-4b77-bd56-9d3d231f0064/styles.css">
+<script src="_ds/modernist-aaba4b24-4ebc-4b77-bd56-9d3d231f0064/_ds_bundle.js"></script>
+<script src="image-slot.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --font-heading:'Manrope',system-ui,sans-serif;--font-body:'Manrope',system-ui,sans-serif;
+  --bk-green:#10794a;--bk-amber:#dd9a2b;--bk-teal:#1f9b95;
+  --bk-accent:var(--bk-green);--bk-on-accent:#fff;--bk-accent-soft:#e6f1ea;
+  --bk-green-deep:#0e4a2e;
+  --bk-bg:#f5f4f0;--bk-surface:#ffffff;--bk-surface-2:#efeee9;
+  --bk-text:#1a1917;--bk-muted:#6b6a63;--bk-line:rgba(20,18,16,.11);
+  --bk-footer:#14150f;--head-h:68px;
+  --r-lg:30px;--r:18px;--r-sm:12px;--r-btn:14px;--r-pill:999px;
+  --sh-sm:0 2px 12px rgba(20,18,16,.06);--sh:0 14px 38px rgba(20,18,16,.10);--sh-lg:0 34px 80px rgba(20,18,16,.13);
+  --color-accent:#10794a;--bk-ease:cubic-bezier(.22,1,.36,1);
+}
+[data-theme="dark"]{
+  --bk-green:#3ec585;--bk-amber:#eeb44a;--bk-teal:#39bab2;
+  --bk-accent:var(--bk-green);--bk-on-accent:#06251a;--bk-accent-soft:rgba(62,197,133,.15);
+  --bk-green-deep:#0f4e31;
+  --bk-bg:#0e100e;--bk-surface:#181c18;--bk-surface-2:#20251f;
+  --bk-text:#f1f0ea;--bk-muted:#a4a59c;--bk-line:rgba(255,255,255,.13);
+  --bk-footer:#080a08;--color-accent:#3ec585;
+}
+body{background:var(--bk-bg);transition:background .4s var(--bk-ease)}
+#bakar-site{--wrap:1280px}
+#bakar-site *{box-sizing:border-box}
+#bakar-site{color:var(--bk-text);font-family:var(--font-body);font-size:16px;line-height:1.6;background:var(--bk-bg);overflow-x:clip;transition:background .4s var(--bk-ease),color .4s var(--bk-ease)}
+#bakar-site img{display:block;max-width:100%}
+#bakar-site a{color:inherit;text-decoration:none}
+#bakar-site a.bk-btn-primary{color:var(--bk-on-accent)}
+#bakar-site a.bk-btn-ghost{color:var(--bk-text)}
+#bakar-site a.bk-btn-white,#bakar-site a.bk-btn-inv-solid{color:var(--bk-green-deep)}
+.bk-wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+.bk-kick{display:inline-block;font-family:var(--font-heading);font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--bk-accent)}
+.bk-mark{fill:currentColor;display:block}
+
+.bk-prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:120;background:transparent}
+.bk-prog>i{display:block;height:100%;width:0;background:var(--bk-accent);transition:width .1s linear}
+
+/* loader */
+.bk-loader{position:fixed;inset:0;z-index:200;background:var(--bk-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;opacity:0;visibility:hidden;transition:opacity .34s var(--bk-ease),visibility .34s}
+.bk-loader.show{opacity:1;visibility:visible}
+.bk-loader-mark{width:74px;height:78px;color:var(--bk-accent);animation:bkpulse 1.1s var(--bk-ease) infinite}
+@keyframes bkpulse{0%{transform:scale(.82) rotate(-6deg);opacity:.55}50%{transform:scale(1.02) rotate(5deg);opacity:1}100%{transform:scale(.82) rotate(-6deg);opacity:.55}}
+.bk-loader-bar{width:128px;height:4px;border-radius:4px;background:var(--bk-surface-2);overflow:hidden}
+.bk-loader-bar>i{display:block;height:100%;width:0;background:var(--bk-accent);border-radius:4px}
+.bk-loader.show .bk-loader-bar>i{animation:bkload .8s var(--bk-ease) forwards}
+@keyframes bkload{0%{width:0}100%{width:100%}}
+.bk-loader-word{font-family:var(--font-heading);font-weight:800;font-size:13px;letter-spacing:.34em;text-transform:uppercase;color:var(--bk-muted)}
+
+/* header */
+.bk-header{position:fixed;top:0;left:0;right:0;z-index:100;background:transparent;transition:background .35s var(--bk-ease),border-color .35s,box-shadow .35s,color .35s;border-bottom:1px solid transparent}
+.bk-header.solid{background:color-mix(in srgb,var(--bk-bg) 95%,transparent);box-shadow:0 6px 24px rgba(20,18,16,.06);border-bottom-color:var(--bk-line)}
+.bk-head-in{max-width:var(--wrap);margin:0 auto;padding:13px clamp(20px,5vw,64px);display:flex;align-items:center;gap:22px}
+.bk-brand{display:flex;align-items:center;gap:11px;margin-right:auto;font-family:var(--font-heading);font-weight:800;font-size:23px;letter-spacing:-.01em;cursor:pointer}
+.bk-brand .bk-mark{width:29px;height:31px;color:var(--bk-accent)}
+.bk-navlinks{display:flex;gap:6px;font-size:14.5px;font-weight:500}
+.bk-navlinks a{padding:8px 14px;border-radius:var(--r-pill);white-space:nowrap;cursor:pointer;transition:background .25s,color .25s}
+.bk-navlinks a:hover{background:var(--bk-accent-soft);color:var(--bk-accent)}
+.bk-navlinks a.on{background:var(--bk-accent);color:var(--bk-on-accent)}
+.bk-tools{display:flex;align-items:center;gap:10px}
+.bk-lang{display:inline-flex;background:var(--bk-surface-2);border-radius:var(--r-pill);padding:3px}
+.bk-lang button{font-family:var(--font-heading);font-weight:700;font-size:11.5px;letter-spacing:.03em;padding:6px 11px;border:0;background:transparent;color:var(--bk-muted);cursor:pointer;border-radius:var(--r-pill);transition:background .25s,color .25s}
+.bk-lang button.on{background:var(--bk-accent);color:var(--bk-on-accent)}
+.bk-lang button:hover:not(.on){color:var(--bk-text)}
+.bk-theme{width:40px;height:40px;border-radius:var(--r-pill);border:1px solid var(--bk-line);background:var(--bk-surface);color:var(--bk-text);cursor:pointer;display:grid;place-items:center;transition:background .25s,transform .25s,border-color .25s,color .25s}
+.bk-theme:hover{transform:translateY(-1px);background:var(--bk-surface-2)}
+.bk-theme svg{width:19px;height:19px}
+.bk-theme .ic-sun{display:none}
+[data-theme="dark"] .bk-theme .ic-moon{display:none}
+[data-theme="dark"] .bk-theme .ic-sun{display:block}
+/* header over hero carousel */
+.bk-header.onhero{color:#fff}
+.bk-header.onhero .bk-brand,.bk-header.onhero .bk-brand .bk-mark,.bk-header.onhero .bk-navlinks a{color:#fff}
+.bk-header.onhero .bk-navlinks a:hover{background:rgba(255,255,255,.16)}
+.bk-header.onhero .bk-navlinks a.on{background:rgba(255,255,255,.22)}
+.bk-header.onhero .bk-lang{background:rgba(255,255,255,.16)}
+.bk-header.onhero .bk-lang button{color:rgba(255,255,255,.82)}
+.bk-header.onhero .bk-lang button.on{background:#fff;color:var(--bk-green-deep)}
+.bk-header.onhero .bk-theme{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32);color:#fff}
+/* dynamic navbar: shrink on scroll */
+.bk-head-in{transition:padding .38s var(--bk-ease)}
+.bk-brand{transition:font-size .38s var(--bk-ease)}
+.bk-brand .bk-mark{transition:width .38s var(--bk-ease),height .38s var(--bk-ease),color .35s}
+.bk-navlinks a,.bk-lang,.bk-theme{transition:background .25s,color .25s,transform .25s,border-color .25s,font-size .38s var(--bk-ease)}
+.bk-header.solid .bk-head-in{padding-top:7px;padding-bottom:7px}
+.bk-header.solid .bk-brand{font-size:20px}
+.bk-header.solid .bk-brand .bk-mark{width:24px;height:25px}
+.bk-header.solid .bk-navlinks{font-size:14px}
+.bk-header.solid .bk-theme{width:36px;height:36px}
+/* more air — navbar + footer */
+.bk-head-in{padding-top:20px;padding-bottom:20px;gap:30px}
+.bk-navlinks{gap:14px}
+.bk-navlinks a{padding:9px 18px}
+.bk-header.solid .bk-head-in{padding-top:11px;padding-bottom:11px}
+.bk-foot{padding-top:clamp(76px,9.5vw,128px);padding-bottom:46px}
+.bk-foot-top{gap:clamp(40px,6vw,88px);padding-bottom:clamp(50px,6vw,78px)}
+.bk-foot h5{margin-bottom:24px}
+.bk-foot ul{gap:15px}
+.bk-foot-lead{margin-top:4px;line-height:1.7}
+.bk-foot-bottom{padding-top:36px}
+/* navbar redesign — floating pill */
+.bk-header{top:14px;padding-left:clamp(12px,3vw,26px);padding-right:clamp(12px,3vw,26px)}
+.bk-header.solid{background:transparent;box-shadow:none;border-bottom-color:transparent}
+.bk-head-in{max-width:1160px;background:var(--bk-surface);border:1px solid var(--bk-line);border-radius:var(--r-pill);box-shadow:var(--sh-sm);padding:11px 14px 11px 24px}
+.bk-header.solid .bk-head-in{box-shadow:var(--sh);padding-top:8px;padding-bottom:8px}
+.bk-header.onhero .bk-head-in{background:rgba(16,19,16,.42);border-color:rgba(255,255,255,.24);box-shadow:0 12px 34px rgba(0,0,0,.28)}
+/* full-bleed marquee */
+.bk-marq{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0;padding:30px 0}
+.bk-marq-track{font-size:clamp(26px,4.4vw,48px);gap:64px}
+
+/* buttons */
+.bk-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-heading);font-weight:700;font-size:14.5px;line-height:1.2;padding:13px 22px;border:1.5px solid transparent;cursor:pointer;border-radius:var(--r-btn);transition:background .25s var(--bk-ease),color .25s,border-color .25s,transform .25s,box-shadow .25s}
+.bk-btn svg{width:17px;height:17px;transition:transform .3s var(--bk-ease)}
+.bk-btn:hover svg{transform:translateX(4px)}
+.bk-btn-primary{background:var(--bk-accent);color:var(--bk-on-accent);box-shadow:var(--sh-sm)}
+.bk-btn-primary:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.bk-btn-ghost{border-color:var(--bk-line);color:var(--bk-text);background:var(--bk-surface)}
+.bk-btn-ghost:hover{background:var(--bk-surface-2)}
+.bk-btn-white{background:#fff;color:var(--bk-green-deep)}
+.bk-btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.bk-btn-inv-solid{background:#fff;color:var(--bk-green-deep)}
+.bk-btn-inv-solid:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+
+/* views */
+.bk-view{display:none}
+.bk-view.active{display:block;animation:bkview .5s var(--bk-ease)}
+@keyframes bkview{from{opacity:0}to{opacity:1}}
+.bk-view{padding-top:var(--head-h)}
+.bk-view[data-view="home"]{padding-top:0}
+
+/* full-screen carousel */
+.bk-carousel{position:relative;height:100vh;min-height:580px;overflow:hidden;background:#0e120f;touch-action:pan-y}
+.bk-slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 1s var(--bk-ease)}
+.bk-slide.on{opacity:1;pointer-events:auto}
+.bk-slide-bg{position:absolute;inset:0;overflow:hidden}
+.bk-slide-bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.09);transition:transform 6.5s linear}
+.bk-slide.on .bk-slide-bg img{transform:scale(1)}
+.bk-slide-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,8,.5),rgba(7,11,8,.12) 20%,rgba(7,11,8,.12) 58%,rgba(7,11,8,.52)),linear-gradient(94deg,rgba(7,11,8,.8),rgba(7,11,8,.4) 55%,rgba(7,11,8,.3))}
+.bk-slide-in{position:relative;z-index:2;max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,5vw,64px);height:100%;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.bk-slide-num{font-family:var(--font-heading);font-weight:800;font-size:13px;letter-spacing:.24em;color:rgba(255,255,255,.72)}
+.bk-slide-tm{display:inline-block;margin-top:16px;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.16);padding:6px 13px;border-radius:var(--r-pill);width:fit-content}
+.bk-slide-name{font-family:var(--font-heading);font-weight:800;font-size:clamp(48px,8.4vw,124px);line-height:.96;letter-spacing:-.045em;margin:16px 0 0}
+.bk-slide-tag{font-size:clamp(16px,1.6vw,21px);color:rgba(255,255,255,.85);max-width:38ch;margin:18px 0 0}
+.bk-slide-cta{margin-top:32px;display:flex;gap:12px;flex-wrap:wrap}
+.bk-car-dots{position:absolute;left:50%;transform:translateX(-50%);bottom:32px;z-index:6;display:flex;gap:9px}
+.bk-car-dots button{width:9px;height:9px;border-radius:var(--r-pill);border:0;background:rgba(255,255,255,.42);cursor:pointer;padding:0;transition:width .35s var(--bk-ease),background .35s}
+.bk-car-dots button.on{width:30px;background:#fff}
+.bk-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:52px;height:52px;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.38);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .25s,transform .25s}
+.bk-arrow:hover{background:rgba(255,255,255,.26)}
+.bk-arrow svg{width:22px;height:22px}
+.bk-arrow.prev{left:clamp(14px,3vw,40px)}
+.bk-arrow.next{right:clamp(14px,3vw,40px)}
+.bk-car-scroll{position:absolute;right:clamp(20px,5vw,64px);bottom:30px;z-index:6;font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px}
+.bk-car-scroll svg{width:18px;height:18px;animation:bkbob 1.8s var(--bk-ease) infinite}
+@keyframes bkbob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+.bk-intro{padding:clamp(60px,9vw,120px) 0}
+.bk-statement{font-family:var(--font-heading);font-weight:800;font-size:clamp(28px,3.8vw,54px);line-height:1.14;letter-spacing:-.03em;max-width:20ch;margin:0}
+.bk-statement em{font-style:normal;color:var(--bk-accent)}
+
+.bk-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,20px)}
+.bk-stat{background:var(--bk-surface);border-radius:var(--r);box-shadow:var(--sh-sm);padding:clamp(28px,3.4vw,44px)}
+.bk-stat-num{font-family:var(--font-heading);font-weight:800;font-size:clamp(42px,5.4vw,68px);line-height:.95;letter-spacing:-.04em;color:var(--bk-accent);display:block}
+.bk-stat-lab{font-size:13.5px;letter-spacing:.03em;font-weight:600;color:var(--bk-muted);margin-top:12px}
+
+.bk-sec-head{display:flex;flex-direction:column;gap:16px;margin-bottom:clamp(40px,6vw,72px)}
+.bk-sec-head h2{font-family:var(--font-heading);font-weight:800;font-size:clamp(30px,4.4vw,56px);line-height:1.06;letter-spacing:-.03em;margin:0;max-width:20ch}
+.bk-sec{padding:clamp(60px,9vw,120px) 0}
+
+/* page header */
+.bk-phead{padding:clamp(56px,8vw,104px) 0 clamp(28px,4vw,46px)}
+.bk-phead h1{font-family:var(--font-heading);font-weight:800;font-size:clamp(40px,6.2vw,86px);line-height:1.01;letter-spacing:-.045em;margin:14px 0 0}
+.bk-phead p{font-size:clamp(16px,1.4vw,19px);color:var(--bk-muted);max-width:54ch;margin:20px 0 0}
+
+/* teaser grid */
+.bk-tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,24px)}
+.bk-tcard{position:relative;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-sm);aspect-ratio:4/3;cursor:pointer;background:#222}
+.bk-tcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--bk-ease)}
+.bk-tcard:hover img{transform:scale(1.06)}
+.bk-tcard-in{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;background:linear-gradient(0deg,rgba(7,11,8,.82),transparent 66%);color:#fff}
+.bk-tcard-in b{font-family:var(--font-heading);font-weight:800;font-size:23px;display:flex;align-items:center;gap:9px}
+.bk-tcard-in .tdot{width:11px;height:11px;border-radius:var(--r-pill)}
+.bk-tcard-in span{font-size:13px;color:rgba(255,255,255,.82);margin-top:3px}
+
+/* category blocks + catalog */
+.bk-cat{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center;padding:clamp(36px,5vw,64px) 0}
+.bk-cat+.bk-cat{border-top:1px solid var(--bk-line)}
+.bk-cat-copy{display:flex;flex-direction:column;align-items:flex-start}
+.bk-cat-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.bk-cat-num{font-family:var(--font-heading);font-weight:800;font-size:15px;color:var(--bk-muted);font-variant-numeric:tabular-nums}
+.bk-cat-dot{width:12px;height:12px;border-radius:var(--r-pill)}
+.bk-cat-tm{font-family:var(--font-heading);font-weight:700;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bk-accent);background:var(--bk-accent-soft);padding:5px 11px;border-radius:var(--r-pill)}
+.bk-cat-name{font-family:var(--font-heading);font-weight:800;font-size:clamp(32px,3.6vw,48px);line-height:1.02;letter-spacing:-.03em;margin:0}
+.bk-cat-items{font-size:16px;line-height:1.7;color:var(--bk-muted);margin:18px 0 0}
+.bk-cat-meta{display:flex;gap:18px;align-items:center;margin:20px 0 24px;font-size:13.5px;color:var(--bk-muted)}
+.bk-cat-more{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-heading);font-weight:700;font-size:14.5px;color:var(--bk-accent);padding:10px 18px;border-radius:var(--r-pill);background:var(--bk-accent-soft);cursor:pointer;transition:transform .25s}
+.bk-cat-more:hover{transform:translateY(-2px)}
+.bk-cat-more svg{width:16px;height:16px}
+.bk-cat-media{overflow:hidden;border-radius:var(--r);box-shadow:var(--sh);aspect-ratio:16/11}
+.bk-cat-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--bk-ease)}
+.bk-cat:hover .bk-cat-media img{transform:scale(1.05)}
+.bk-cat.rev .bk-cat-copy{order:2}
+.bk-cat.rev .bk-cat-media{order:1}
+.bk-sku{list-style:none;margin:20px 0 0;padding:0;width:100%;border-top:1px solid var(--bk-line)}
+.bk-sku li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--bk-line)}
+.bk-sku .n{font-weight:600;font-size:15.5px}
+.bk-sku .n small{display:block;font-weight:600;color:var(--bk-muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.bk-sku .w{color:var(--bk-accent);white-space:nowrap;font-weight:700;font-size:14.5px}
+
+/* lifestyle */
+.bk-life{position:relative;height:clamp(340px,48vw,520px);overflow:hidden;border-radius:var(--r-lg);box-shadow:var(--sh);background:#2a2926}
+.bk-life .bk-life-media{position:absolute;inset:-8% 0;height:116%;width:100%}
+.bk-life .bk-life-media image-slot{width:100%;height:100%}
+.bk-life-cap{position:absolute;left:0;right:0;bottom:0;padding:clamp(28px,4vw,52px);background:linear-gradient(0deg,rgba(10,14,11,.82),transparent)}
+.bk-life-cap h3{font-family:var(--font-heading);font-weight:800;font-size:clamp(24px,3.2vw,42px);line-height:1.1;letter-spacing:-.02em;color:#fff;max-width:22ch;margin:0}
+.bk-life-cap .bk-kick{color:#cfeadd;margin-bottom:14px}
+
+/* about + steps */
+.bk-about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,72px);align-items:center}
+.bk-about-media{overflow:hidden;border-radius:var(--r-lg);box-shadow:var(--sh);aspect-ratio:4/5}
+.bk-about-media image-slot{width:100%;height:100%}
+.bk-about h2{font-family:var(--font-heading);font-weight:800;font-size:clamp(28px,3.6vw,46px);line-height:1.08;letter-spacing:-.03em;margin:16px 0 22px}
+.bk-about p{font-size:17px;line-height:1.7;color:var(--bk-muted);max-width:48ch}
+.bk-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2vw,24px)}
+.bk-step{background:var(--bk-surface);border-radius:var(--r);box-shadow:var(--sh-sm);padding:clamp(24px,2.6vw,34px)}
+.bk-step-n{font-family:var(--font-heading);font-weight:800;font-size:15px;color:var(--bk-accent)}
+.bk-step h4{font-family:var(--font-heading);font-weight:800;font-size:19px;margin:14px 0 8px}
+.bk-step p{font-size:14.5px;color:var(--bk-muted);margin:0;line-height:1.55}
+
+/* panels */
+.bk-panel{border-radius:var(--r-lg);padding:clamp(38px,5.5vw,76px)}
+.bk-panel-green{background:var(--bk-green-deep);color:#fff;box-shadow:var(--sh)}
+.bk-panel-green .bk-kick{color:#cfeadd}
+.bk-panel-green h2{color:#fff}
+.bk-cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,26px);margin-top:clamp(32px,4.5vw,52px)}
+.bk-cert{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:clamp(26px,3vw,40px)}
+.bk-cert .ring{width:60px;height:60px;border:2px solid #dfe9a8;border-radius:50%;display:grid;place-items:center;color:#e6efb4}
+.bk-cert .ring svg{width:25px;height:25px}
+.bk-cert h4{font-family:var(--font-heading);font-weight:800;font-size:21px;margin:20px 0 8px}
+.bk-cert p{font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.78);margin:0}
+.bk-cta-banner{text-align:left;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+.bk-cta-banner h2{margin:0}
+.bk-cta-banner p{color:rgba(255,255,255,.85);margin:12px 0 0;max-width:40ch}
+
+/* geo */
+.bk-geo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,72px);align-items:center}
+.bk-geo h2{font-family:var(--font-heading);font-weight:800;font-size:clamp(28px,3.6vw,46px);line-height:1.08;letter-spacing:-.03em;margin:16px 0 20px}
+.bk-geo-map{border-radius:var(--r-lg);box-shadow:var(--sh);aspect-ratio:16/10;overflow:hidden}
+.bk-geo-map image-slot{width:100%;height:100%}
+.bk-geo-list{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.bk-geo-list li{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:var(--r-sm);background:var(--bk-surface);box-shadow:var(--sh-sm);font-family:var(--font-heading);font-weight:700;font-size:18px}
+.bk-geo-list .pin{width:10px;height:10px;border-radius:var(--r-pill);background:var(--bk-accent);flex:none}
+
+/* partners */
+.bk-partners h2{font-family:var(--font-heading);font-weight:800;font-size:clamp(30px,4.2vw,54px);line-height:1.06;letter-spacing:-.03em;margin:16px 0 22px;color:#fff;max-width:18ch}
+.bk-partners-in{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(34px,5vw,72px);align-items:center}
+.bk-pf{display:flex;flex-direction:column;gap:14px}
+.bk-pf-row{display:flex;gap:16px;padding:20px 22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r)}
+.bk-pf-n{font-family:var(--font-heading);font-weight:800;font-size:14px;color:#cfeadd;min-width:30px}
+.bk-pf-row h4{font-family:var(--font-heading);font-weight:800;font-size:18px;margin:0 0 5px}
+.bk-pf-row p{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82);margin:0}
+
+/* reviews */
+.bk-rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,28px)}
+.bk-rev{background:var(--bk-surface);border-radius:var(--r);box-shadow:var(--sh-sm);padding:clamp(26px,3vw,38px);display:flex;flex-direction:column;gap:18px}
+.bk-rev-q{font-family:var(--font-heading);font-weight:700;font-size:20px;line-height:1.34;letter-spacing:-.01em;margin:0}
+.bk-rev-who{margin-top:auto;font-size:13.5px;color:var(--bk-muted)}
+.bk-rev-who b{display:block;font-family:var(--font-heading);color:var(--bk-text);font-size:15px}
+.bk-marq{margin-top:clamp(38px,5vw,60px);border-top:1px solid var(--bk-line);border-bottom:1px solid var(--bk-line);overflow:hidden;padding:22px 0}
+.bk-marq-track{display:flex;gap:56px;width:max-content;animation:bkmarq 26s linear infinite;font-family:var(--font-heading);font-weight:800;font-size:22px;color:color-mix(in srgb,var(--bk-text) 26%,transparent);white-space:nowrap}
+@keyframes bkmarq{to{transform:translateX(-50%)}}
+
+/* contacts */
+.bk-cinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,24px)}
+.bk-cicard{background:var(--bk-surface);border-radius:var(--r);box-shadow:var(--sh-sm);padding:clamp(24px,3vw,34px)}
+.bk-cicard .ic{width:46px;height:46px;border-radius:var(--r-pill);background:var(--bk-accent-soft);color:var(--bk-accent);display:grid;place-items:center;margin-bottom:16px}
+.bk-cicard .ic svg{width:21px;height:21px}
+.bk-cicard h4{font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--bk-muted);margin:0 0 8px}
+.bk-cicard p{font-size:17px;font-weight:600;margin:0;line-height:1.4}
+.bk-contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,60px);align-items:start;margin-top:clamp(24px,3vw,40px)}
+.bk-form{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bk-form .full{grid-column:1/-1}
+.bk-form label{font-size:12.5px;font-weight:600;color:var(--bk-muted);margin-bottom:6px;display:block}
+.bk-input{width:100%;font:inherit;font-size:15px;color:var(--bk-text);background:var(--bk-surface);border:1px solid var(--bk-line);border-radius:var(--r-sm);padding:14px 16px}
+.bk-input:focus{outline:2px solid var(--bk-accent);outline-offset:1px;border-color:transparent}
+textarea.bk-input{min-height:128px;resize:vertical}
+.bk-contact-map{border-radius:var(--r-lg);box-shadow:var(--sh);aspect-ratio:1/1;overflow:hidden}
+.bk-contact-map image-slot{width:100%;height:100%}
+
+/* footer */
+.bk-foot{background:var(--bk-footer);color:rgba(255,255,255,.72);padding:clamp(56px,7vw,92px) 0 38px;margin-top:clamp(60px,9vw,120px);border-top-left-radius:var(--r-lg);border-top-right-radius:var(--r-lg)}
+.bk-foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:clamp(30px,5vw,60px);padding-bottom:clamp(38px,5vw,56px);border-bottom:1px solid rgba(255,255,255,.14)}
+.bk-foot .bk-brand{color:#fff;margin:0 0 18px}
+.bk-foot .bk-brand .bk-mark{color:#cfeadd}
+.bk-foot h5{font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0 0 18px}
+.bk-foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;font-size:15px}
+.bk-foot ul a{cursor:pointer}
+.bk-foot ul a:hover{color:#fff}
+.bk-foot-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:26px;font-size:13px;color:rgba(255,255,255,.45)}
+.bk-foot-lead{font-size:16px;line-height:1.6;color:rgba(255,255,255,.68);max-width:38ch}
+
+/* reveal */
+#bakar-site.bk-anim [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .9s var(--bk-ease),transform .9s var(--bk-ease)}
+#bakar-site.bk-anim [data-reveal="right"]{transform:translateX(46px)}
+#bakar-site.bk-anim [data-reveal="left"]{transform:translateX(-46px)}
+#bakar-site.bk-anim [data-reveal="scale"]{transform:scale(.94)}
+#bakar-site.bk-anim [data-reveal].in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .bk-navlinks{display:none}
+  .bk-hero-in,.bk-about,.bk-geo,.bk-partners-in,.bk-contact,.bk-form{grid-template-columns:1fr}
+  .bk-cat{grid-template-columns:1fr;gap:24px}
+  .bk-cat.rev .bk-cat-copy,.bk-cat.rev .bk-cat-media{order:0}
+  .bk-stats-grid,.bk-tgrid,.bk-steps{grid-template-columns:repeat(2,1fr)}
+  .bk-cert-grid,.bk-rev-grid,.bk-cinfo{grid-template-columns:1fr}
+  .bk-foot-top{grid-template-columns:1fr}
+  .bk-arrow{display:none}
+}
+</style>
+</helmet>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<path id="bk-petal" d="M0 -16 C6.2 -7,6.2 7,0 16 C-6.2 7,-6.2 -7,0 -16 Z"/>
+<symbol id="bakar-mark" viewBox="0 0 120 130">
+<use href="#bk-petal" transform="rotate(-12 60 78) translate(60 46)"/><use href="#bk-petal" transform="rotate(12 60 78) translate(60 46)"/>
+<use href="#bk-petal" transform="rotate(-40 60 78) translate(60 46)"/><use href="#bk-petal" transform="rotate(40 60 78) translate(60 46)"/>
+<use href="#bk-petal" transform="rotate(-68 60 78) translate(60 46)"/><use href="#bk-petal" transform="rotate(68 60 78) translate(60 46)"/>
+<use href="#bk-petal" transform="rotate(-96 60 78) translate(60 46)"/><use href="#bk-petal" transform="rotate(96 60 78) translate(60 46)"/>
+<path d="M43 72 C44 55,76 55,77 72 C71 63,66 65,60 65 C54 65,49 63,43 72 Z"/>
+<path d="M60 73 L104 108 L87 108 L60 86 L33 108 L16 108 Z"/>
+</symbol>
+</defs></svg>
+
+<div id="bakar-site">
+<div class="bk-prog"><i></i></div>
+
+<div class="bk-loader" data-loader>
+  <svg class="bk-mark bk-loader-mark" viewBox="0 0 120 130"><use href="#bakar-mark"/></svg>
+  <div class="bk-loader-bar"><i></i></div>
+  <div class="bk-loader-word">BAKAR</div>
+</div>
+
+<header class="bk-header">
+  <div class="bk-head-in">
+    <a class="bk-brand" href="#home"><svg class="bk-mark" viewBox="0 0 120 130"><use href="#bakar-mark"/></svg>BAKAR</a>
+    <nav class="bk-navlinks">
+      <a data-nav="products" href="#products" data-i18n="nav_products">Продукция</a>
+      <a data-nav="about" href="#about" data-i18n="nav_about">О нас</a>
+      <a data-nav="certs" href="#certs" data-i18n="nav_certs">Сертификаты</a>
+      <a data-nav="contacts" href="#contacts" data-i18n="nav_contacts">Контакты</a>
+    </nav>
+    <div class="bk-tools">
+      <div class="bk-lang">
+        <button type="button" data-lang="tm">TM</button><button type="button" data-lang="ru" class="on">RU</button><button type="button" data-lang="en">EN</button>
+      </div>
+      <button type="button" class="bk-theme" data-theme-toggle aria-label="Сменить тему">
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      </button>
+      <a class="bk-btn bk-btn-primary bk-nav-cta" data-nav="contacts" href="#contacts" style="padding:9px 16px;font-size:13.5px"><span data-i18n="partners_cta">Стать партнёром</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HOME ================= -->
+<main class="bk-view active" data-view="home">
+  <section class="bk-carousel" data-carousel>
+    <div class="bk-slide on"><div class="bk-slide-bg"><img src="assets/o-grains.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">01 / 06</span><span class="bk-slide-tm">Ýarma</span><h2 class="bk-slide-name" data-i18n="cat1_name">Крупы</h2><p class="bk-slide-tag" data-i18n="slide1_tag">Ирмик, булгур, гречка, нохут — отборное зерно для каждого дня.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <div class="bk-slide"><div class="bk-slide-bg"><img src="assets/o-pasta.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">02 / 06</span><span class="bk-slide-tm">Makaron</span><h2 class="bk-slide-name" data-i18n="cat2_name">Макароны</h2><p class="bk-slide-tag" data-i18n="slide2_tag">Пенне, бургу, фарфалле, лингвини. Готово за 10 минут.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <div class="bk-slide"><div class="bk-slide-bg"><img src="assets/o-legumes.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">03 / 06</span><span class="bk-slide-tm">Kösükliler</span><h2 class="bk-slide-name" data-i18n="cat3_name">Бобовые</h2><p class="bk-slide-tag" data-i18n="slide3_tag">Чечевица и фасоль — источник растительного белка.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <div class="bk-slide"><div class="bk-slide-bg"><img src="assets/o-rice.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">04 / 06</span><span class="bk-slide-tm">Tüwi</span><h2 class="bk-slide-name" data-i18n="cat4_name">Рис</h2><p class="bk-slide-tag" data-i18n="slide4_tag">Длиннозёрный, балдо, османчик — от 500 г до 5 кг.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <div class="bk-slide"><div class="bk-slide-bg"><img src="assets/o-oats.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">05 / 06</span><span class="bk-slide-tm">Gerkules</span><h2 class="bk-slide-name" data-i18n="cat5_name">Хлопья</h2><p class="bk-slide-tag" data-i18n="slide5_tag">Овсяные хлопья «Геркулес» из цельного зерна.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <div class="bk-slide"><div class="bk-slide-bg"><img src="assets/o-seeds.jpg" alt=""></div><div class="bk-slide-scrim"></div><div class="bk-slide-in"><span class="bk-slide-num">06 / 06</span><span class="bk-slide-tm">Günebakar çigidi</span><h2 class="bk-slide-name" data-i18n="cat6_name">Семечки</h2><p class="bk-slide-tag" data-i18n="slide6_tag">Жареные подсолнечные семечки — солёные и несолёные.</p><div class="bk-slide-cta"><a class="bk-btn bk-btn-white" href="#products"><span data-i18n="hero_cta">Смотреть продукцию</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div></div>
+    <button type="button" class="bk-arrow prev" data-car-prev aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button type="button" class="bk-arrow next" data-car-next aria-label="Вперёд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="bk-car-dots" data-car-dots>
+      <button type="button" class="on"></button><button type="button"></button><button type="button"></button><button type="button"></button><button type="button"></button><button type="button"></button>
+    </div>
+    <span class="bk-car-scroll"><span data-i18n="hero_scroll">листайте вниз</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+  </section>
+
+  <section class="bk-intro"><div class="bk-wrap"><p class="bk-statement" data-reveal>Простые продукты, <em>сделанные добросовестно.</em></p></div></section>
+
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap bk-stats-grid">
+    <div class="bk-stat" data-reveal><span class="bk-stat-num" data-count="6">6</span><div class="bk-stat-lab" data-i18n="stat_cats">категорий продукции</div></div>
+    <div class="bk-stat" data-reveal style="transition-delay:.08s"><span class="bk-stat-num" data-count="25" data-suffix="+">25+</span><div class="bk-stat-lab" data-i18n="stat_skus">наименований</div></div>
+    <div class="bk-stat" data-reveal style="transition-delay:.16s"><span class="bk-stat-num" data-count="3">3</span><div class="bk-stat-lab" data-i18n="stat_certs">сертификата качества</div></div>
+    <div class="bk-stat" data-reveal style="transition-delay:.24s"><span class="bk-stat-num" data-count="100" data-suffix="%">100%</span><div class="bk-stat-lab" data-i18n="stat_qc">контроль качества</div></div>
+  </div></section>
+
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <div class="bk-sec-head" data-reveal><span class="bk-kick" data-i18n="cats_kicker">Ассортимент</span><h2 data-i18n="cats_title">Шесть категорий, один стандарт качества.</h2></div>
+    <div class="bk-tgrid">
+      <div class="bk-tcard" data-reveal data-nav="products"><img src="assets/o-grains.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-green)"></i><span data-i18n="cat1_name">Крупы</span></b><span>Ирмик · Булгур · Гречка · Нохут</span></div></div>
+      <div class="bk-tcard" data-reveal style="transition-delay:.06s" data-nav="products"><img src="assets/o-pasta.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-green)"></i><span data-i18n="cat2_name">Макароны</span></b><span>Пенне · Бургу · Фарфалле</span></div></div>
+      <div class="bk-tcard" data-reveal style="transition-delay:.12s" data-nav="products"><img src="assets/o-legumes.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-amber)"></i><span data-i18n="cat3_name">Бобовые</span></b><span>Чечевица · Фасоль</span></div></div>
+      <div class="bk-tcard" data-reveal data-nav="products"><img src="assets/o-rice.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-teal)"></i><span data-i18n="cat4_name">Рис</span></b><span>Длиннозёрный · Балдо · Османчик</span></div></div>
+      <div class="bk-tcard" data-reveal style="transition-delay:.06s" data-nav="products"><img src="assets/o-oats.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-teal)"></i><span data-i18n="cat5_name">Хлопья</span></b><span>Овсяные «Геркулес»</span></div></div>
+      <div class="bk-tcard" data-reveal style="transition-delay:.12s" data-nav="products"><img src="assets/o-seeds.jpg" alt=""><div class="bk-tcard-in"><b><i class="tdot" style="background:var(--bk-amber)"></i><span data-i18n="cat6_name">Семечки</span></b><span>Подсолнечные, жареные</span></div></div>
+    </div>
+  </div></section>
+
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap"><div class="bk-life" data-reveal="scale">
+    <div class="bk-life-media"><image-slot id="bk-life-field" shape="rect" placeholder="Фото: поле / уборка урожая"></image-slot></div>
+    <div class="bk-life-cap"><span class="bk-kick" data-i18n="life_kick">От поля до упаковки</span><h3 data-i18n="life_title">Каждая партия проходит очистку, калибровку и контроль качества.</h3></div>
+  </div></div></section>
+
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <div class="bk-sec-head" data-reveal><span class="bk-kick" data-i18n="reviews_kicker">Отзывы</span><h2 data-i18n="reviews_title">Нас выбирают дома и на полке.</h2></div>
+    <div class="bk-rev-grid">
+      <div class="bk-rev" data-reveal><p class="bk-rev-q">«Крупы Bakar всегда чистые и ровные — беру каждую неделю».</p><div class="bk-rev-who"><b>Огулджерен</b>покупатель, Aşgabat</div></div>
+      <div class="bk-rev" data-reveal style="transition-delay:.1s"><p class="bk-rev-q">«Стабильное качество и удобная фасовка — товар не залёживается».</p><div class="bk-rev-who"><b>Магазин «Berk»</b>розница, Mary</div></div>
+      <div class="bk-rev" data-reveal style="transition-delay:.2s"><p class="bk-rev-q">«Работаем с Bakar как с дистрибьютором — поставки без срывов».</p><div class="bk-rev-who"><b>ХБ «Ак ýol»</b>партнёр, Türkmenabat</div></div>
+    </div>
+    <div class="bk-marq" data-reveal><div class="bk-marq-track"><span>BAKAR</span><span>ýokary hilli</span><span>Halal</span><span>Non-GMO</span><span>Gluten-free</span><span>Türkmenistan</span><span>BAKAR</span><span>ýokary hilli</span><span>Halal</span><span>Non-GMO</span><span>Gluten-free</span><span>Türkmenistan</span></div></div>
+  </div></section>
+
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap"><div class="bk-panel bk-panel-green bk-cta-banner" data-reveal>
+    <div><span class="bk-kick" data-i18n="partners_kicker">Партнёрам</span><h2 style="font-family:var(--font-heading);font-weight:800;font-size:clamp(28px,3.6vw,46px);letter-spacing:-.03em;line-height:1.06;margin:12px 0 0" data-i18n="partners_title">Оптовые поставки и дистрибуция.</h2><p data-i18n="partners_body">Приглашаем магазины, сети и дистрибьюторов к сотрудничеству.</p></div>
+    <a class="bk-btn bk-btn-white" href="#contacts"><span data-i18n="partners_cta">Стать партнёром</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div></div></section>
+</main>
+
+<!-- ================= PRODUCTS ================= -->
+<main class="bk-view" data-view="products">
+  <section class="bk-phead"><div class="bk-wrap"><span class="bk-kick" data-i18n="cats_kicker">Ассортимент</span><h1 data-i18n="products_h">Вся продукция Bakar</h1><p data-i18n="products_p">Шесть категорий базовых продуктов — крупы, макароны, бобовые, рис, хлопья и семечки. Halal, без ГМО, без глютена.</p></div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <article class="bk-cat" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">01</span><i class="bk-cat-dot" style="background:var(--bk-green)"></i><span class="bk-cat-tm">Ýarma</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat1_name">Крупы</h3>
+        <ul class="bk-sku"><li><span class="n">Ирмик<small>Irmik</small></span><span class="w">1 кг</span></li><li><span class="n">Булгур<small>Koftelik bulgur</small></span><span class="w">1 кг</span></li><li><span class="n">Гречка<small>Greçka</small></span><span class="w">1 кг</span></li><li><span class="n">Нохут<small>Nohut</small></span><span class="w">1 кг</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-grains.jpg" alt="Крупы Bakar"></div>
+    </article>
+    <article class="bk-cat rev" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">02</span><i class="bk-cat-dot" style="background:var(--bk-green)"></i><span class="bk-cat-tm">Makaron</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat2_name">Макароны</h3>
+        <ul class="bk-sku"><li><span class="n">Пенне<small>Penne</small></span><span class="w">800 г</span></li><li><span class="n">Бургу<small>Burgu</small></span><span class="w">800 г</span></li><li><span class="n">Фарфалле<small>Farfalle</small></span><span class="w">800 г</span></li><li><span class="n">Рожки<small>Dirsek</small></span><span class="w">800 г</span></li><li><span class="n">Лингвини<small>Linguine</small></span><span class="w">800 г</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-pasta.jpg" alt="Макароны Bakar"></div>
+    </article>
+    <article class="bk-cat" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">03</span><i class="bk-cat-dot" style="background:var(--bk-amber)"></i><span class="bk-cat-tm">Kösükliler</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat3_name">Бобовые</h3>
+        <ul class="bk-sku"><li><span class="n">Красная чечевица<small>Gyzyl merjimek</small></span><span class="w">500 г</span></li><li><span class="n">Зелёная чечевица<small>Ýaşyl merjimek</small></span><span class="w">500 г</span></li><li><span class="n">Красная фасоль<small>Gyzyl noýba</small></span><span class="w">1 кг</span></li><li><span class="n">Белая фасоль<small>Ak noýba</small></span><span class="w">1 кг</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-legumes.jpg" alt="Бобовые Bakar"></div>
+    </article>
+    <article class="bk-cat rev" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">04</span><i class="bk-cat-dot" style="background:var(--bk-teal)"></i><span class="bk-cat-tm">Tüwi</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat4_name">Рис</h3>
+        <ul class="bk-sku"><li><span class="n">Длиннозёрный<small>Uzyn däneli tüwi</small></span><span class="w">500 г</span></li><li><span class="n">Балдо<small>Baldo pirinç</small></span><span class="w">1 кг</span></li><li><span class="n">Османчик<small>Osmançik pirinç</small></span><span class="w">5 кг</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-rice.jpg" alt="Рис Bakar"></div>
+    </article>
+    <article class="bk-cat" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">05</span><i class="bk-cat-dot" style="background:var(--bk-teal)"></i><span class="bk-cat-tm">Gerkules</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat5_name">Хлопья</h3>
+        <ul class="bk-sku"><li><span class="n">Овсяные хлопья «Геркулес»<small>Gerkules</small></span><span class="w">500 г</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-oats.jpg" alt="Хлопья Bakar"></div>
+    </article>
+    <article class="bk-cat rev" data-reveal>
+      <div class="bk-cat-copy">
+        <div class="bk-cat-top"><span class="bk-cat-num">06</span><i class="bk-cat-dot" style="background:var(--bk-amber)"></i><span class="bk-cat-tm">Günebakar çigidi</span></div>
+        <h3 class="bk-cat-name" data-i18n="cat6_name">Семечки</h3>
+        <ul class="bk-sku"><li><span class="n">Несолёные<small>Duzsuz</small></span><span class="w">50 г · 5 кг</span></li><li><span class="n">Солёные<small>Duzly</small></span><span class="w">50 г</span></li><li><span class="n">Жареные<small>Gowrulan</small></span><span class="w">50 г</span></li></ul>
+      </div>
+      <div class="bk-cat-media"><img loading="lazy" src="assets/o-seeds.jpg" alt="Семечки Bakar"></div>
+    </article>
+  </div></section>
+</main>
+
+<!-- ================= ABOUT ================= -->
+<main class="bk-view" data-view="about">
+  <section class="bk-phead"><div class="bk-wrap"><span class="bk-kick" data-i18n="about_kicker">О компании</span><h1 data-i18n="about_title">Зерно, отобранное вручную.</h1><p data-i18n="about_p">Bakar — туркменский производитель базовых продуктов питания под принципом «ýokary hilli» — высокое качество.</p></div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap bk-about">
+    <div class="bk-about-media" data-reveal="left"><image-slot id="bk-about-prod" shape="rect" placeholder="Фото: производство"></image-slot></div>
+    <div data-reveal="right">
+      <p>Мы работаем напрямую с фермерами, очищаем и калибруем каждую партию и упаковываем без консервантов. Всё, что попадает в пачку Bakar, проходит контроль качества.</p>
+      <p>Один принцип одинаково касается зерна, риса, бобовых и семечек — в каждой упаковке. Именно поэтому нас выбирают и дома, и на полке магазина.</p>
+    </div>
+  </div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <div class="bk-sec-head" data-reveal><span class="bk-kick" data-i18n="life_kick">От поля до упаковки</span><h2 data-i18n="process_h">Четыре шага к качеству.</h2></div>
+    <div class="bk-steps">
+      <div class="bk-step" data-reveal><div class="bk-step-n">01</div><h4 data-i18n="step1_t">Отбор сырья</h4><p data-i18n="step1_d">Работаем напрямую с проверенными фермерами.</p></div>
+      <div class="bk-step" data-reveal style="transition-delay:.08s"><div class="bk-step-n">02</div><h4 data-i18n="step2_t">Очистка и калибровка</h4><p data-i18n="step2_d">Каждая партия очищается и сортируется по размеру.</p></div>
+      <div class="bk-step" data-reveal style="transition-delay:.16s"><div class="bk-step-n">03</div><h4 data-i18n="step3_t">Контроль качества</h4><p data-i18n="step3_d">Проверка по стандартам Halal и Non-GMO.</p></div>
+      <div class="bk-step" data-reveal style="transition-delay:.24s"><div class="bk-step-n">04</div><h4 data-i18n="step4_t">Упаковка</h4><p data-i18n="step4_d">Фасовка без консервантов, от 50 г до 5 кг.</p></div>
+    </div>
+  </div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap bk-geo">
+    <div data-reveal="left"><span class="bk-kick" data-i18n="geo_kicker">География</span><h2 data-i18n="geo_title">Поставки по всему Туркменистану.</h2>
+      <ul class="bk-geo-list"><li><i class="pin"></i>Aşgabat</li><li><i class="pin"></i>Mary</li><li><i class="pin"></i>Türkmenabat</li><li><i class="pin"></i>Daşoguz</li><li><i class="pin"></i>Balkanabat</li></ul>
+    </div>
+    <div class="bk-geo-map" data-reveal="right"><image-slot id="bk-geo-map-img" shape="rect" placeholder="Карта поставок (заглушка)"></image-slot></div>
+  </div></section>
+</main>
+
+<!-- ================= CERTS ================= -->
+<main class="bk-view" data-view="certs">
+  <section class="bk-phead"><div class="bk-wrap"><span class="bk-kick" data-i18n="certs_kicker">Гарантии</span><h1 data-i18n="certs_h">Сертифицировано в каждой упаковке.</h1><p data-i18n="certs_p">Продукция Bakar соответствует стандартам качества и отмечена знаками на упаковке.</p></div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <div class="bk-panel bk-panel-green" data-reveal>
+      <span class="bk-kick" data-i18n="certs_kicker">Гарантии</span>
+      <h2 style="font-family:var(--font-heading);font-weight:800;font-size:clamp(28px,3.8vw,50px);line-height:1.06;letter-spacing:-.03em;margin:14px 0 0" data-i18n="certs_title">Три знака качества.</h2>
+      <div class="bk-cert-grid">
+        <div class="bk-cert"><span class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 20.4 6.8 18.1l1-5.8L3.6 8.1l5.8-.8z"/></svg></span><h4 data-i18n="cert1_name">Halal</h4><p>Продукция соответствует стандартам халяль на всех этапах производства.</p></div>
+        <div class="bk-cert"><span class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2C7 6 6 10 6 13a6 6 0 0 0 12 0c0-3-1-7-6-11z"/></svg></span><h4 data-i18n="cert2_name">Non-GMO</h4><p>Без генетически модифицированных ингредиентов.</p></div>
+        <div class="bk-cert"><span class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s3-7 8-7 8 7 8 7-3 7-8 7-8-7-8-7z"/><path d="M5 5l14 14"/></svg></span><h4 data-i18n="cert3_name">Gluten-free</h4><p>Линейки без глютена отмечены отдельным знаком на упаковке.</p></div>
+      </div>
+    </div>
+  </div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap bk-steps">
+    <div class="bk-step" data-reveal><div class="bk-step-n">✓</div><h4 data-i18n="q1_t">Контроль партий</h4><p data-i18n="q1_d">Каждая партия проверяется до фасовки.</p></div>
+    <div class="bk-step" data-reveal style="transition-delay:.08s"><div class="bk-step-n">✓</div><h4 data-i18n="q2_t">Без консервантов</h4><p data-i18n="q2_d">Только натуральное сырьё в упаковке.</p></div>
+    <div class="bk-step" data-reveal style="transition-delay:.16s"><div class="bk-step-n">✓</div><h4 data-i18n="q3_t">Готово за 10 минут</h4><p data-i18n="q3_d">Макароны Bakar варятся быстро и не развариваются.</p></div>
+    <div class="bk-step" data-reveal style="transition-delay:.24s"><div class="bk-step-n">✓</div><h4 data-i18n="q4_t">Прослеживаемость</h4><p data-i18n="q4_d">От поля до полки — понятная цепочка поставок.</p></div>
+  </div></section>
+</main>
+
+<!-- ================= CONTACTS ================= -->
+<main class="bk-view" data-view="contacts">
+  <section class="bk-phead"><div class="bk-wrap"><span class="bk-kick" data-i18n="nav_contacts">Контакты</span><h1 data-i18n="contacts_h">Свяжитесь с нами</h1><p data-i18n="contacts_p">Оптовые заказы, сотрудничество и вопросы по продукции — напишите нам.</p></div></section>
+  <section class="bk-sec" style="padding-top:0"><div class="bk-wrap">
+    <div class="bk-cinfo">
+      <div class="bk-cicard" data-reveal><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h4 data-i18n="ci_addr">Адрес</h4><p>Türkmenistan,<br>Aşgabat</p></div>
+      <div class="bk-cicard" data-reveal style="transition-delay:.08s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.9 2.1z"/></svg></span><h4 data-i18n="ci_phone">Телефон</h4><p><a href="tel:+99300000000">+993 00 00-00-00</a></p></div>
+      <div class="bk-cicard" data-reveal style="transition-delay:.16s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><h4 data-i18n="ci_email">E-mail</h4><p><a href="mailto:info@bakar.tm">info@bakar.tm</a></p></div>
+    </div>
+    <div class="bk-contact">
+      <form class="bk-form" data-reveal="left" onsubmit="return false">
+        <div><label data-i18n="f_name">Имя</label><input class="bk-input" type="text" placeholder="Огулджерен"></div>
+        <div><label data-i18n="f_company">Компания</label><input class="bk-input" type="text" placeholder="Магазин / сеть"></div>
+        <div class="full"><label data-i18n="f_email">E-mail или телефон</label><input class="bk-input" type="text" placeholder="info@bakar.tm"></div>
+        <div class="full"><label data-i18n="f_msg">Сообщение</label><textarea class="bk-input" placeholder="Интересует оптовая поставка…"></textarea></div>
+        <div class="full"><button type="submit" class="bk-btn bk-btn-primary"><span data-i18n="f_send">Отправить заявку</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+      </form>
+      <div class="bk-contact-map" data-reveal="right"><image-slot id="bk-contact-map" shape="rect" placeholder="Карта / адрес (заглушка)"></image-slot></div>
+    </div>
+  </div></section>
+</main>
+
+<main class="bk-view" data-view="notfound">
+  <section class="bk-phead" style="min-height:72vh;display:flex;align-items:center">
+    <div class="bk-wrap" style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center">
+      <svg class="bk-mark" viewBox="0 0 120 130" style="width:70px;height:74px;color:var(--bk-accent);margin-bottom:6px"><use href="#bakar-mark"/></svg>
+      <div style="font-family:var(--font-heading);font-weight:800;font-size:clamp(76px,15vw,160px);line-height:1;letter-spacing:-.05em;color:var(--bk-accent)">404</div>
+      <h1 style="margin:10px 0 0">Страница не найдена</h1>
+      <p style="margin:18px auto 0;max-width:44ch">Возможно, ссылка устарела или страница переехала. Вернитесь на главную и продолжите знакомство с продукцией Bakar.</p>
+      <a class="bk-btn bk-btn-primary" data-nav="home" href="#home" style="margin-top:28px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>На главную</a>
+    </div>
+  </section>
+</main>
+
+<footer class="bk-foot">
+  <div class="bk-wrap">
+    <div class="bk-foot-top">
+      <div>
+        <div class="bk-brand"><svg class="bk-mark" viewBox="0 0 120 130"><use href="#bakar-mark"/></svg>BAKAR</div>
+        <p class="bk-foot-lead" data-i18n="foot_lead">Крупы, макароны, бобовые, рис и семечки высокого качества. Произведено в Туркменистане.</p>
+      </div>
+      <div><h5 data-i18n="foot_nav">Разделы</h5><ul>
+        <li><a data-nav="products" href="#products" data-i18n="nav_products">Продукция</a></li>
+        <li><a data-nav="about" href="#about" data-i18n="nav_about">О нас</a></li>
+        <li><a data-nav="certs" href="#certs" data-i18n="nav_certs">Сертификаты</a></li>
+        <li><a data-nav="contacts" href="#contacts" data-i18n="nav_contacts">Контакты</a></li>
+      </ul></div>
+      <div><h5 data-i18n="foot_contacts">Контакты</h5><ul>
+        <li>Türkmenistan, Aşgabat</li>
+        <li><a href="tel:+99300000000">+993 00 00-00-00</a></li>
+        <li><a href="mailto:info@bakar.tm">info@bakar.tm</a></li>
+        <li>Instagram · Telegram</li>
+      </ul></div>
+    </div>
+    <div class="bk-foot-bottom"><span>© 2026 BAKAR · ýokary hilli</span><span>Halal · Non-GMO · Gluten-free</span></div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  dict = {
+    nav_products:{ru:'Продукция',tm:'Önümler',en:'Products'},
+    nav_about:{ru:'О нас',tm:'Biz barada',en:'About'},
+    nav_certs:{ru:'Сертификаты',tm:'Şahadatnamalar',en:'Certificates'},
+    nav_contacts:{ru:'Контакты',tm:'Habarlaşmak',en:'Contacts'},
+    hero_cta:{ru:'Смотреть продукцию',tm:'Önümleri görmek',en:'See products'},
+    hero_scroll:{ru:'листайте вниз',tm:'aşak süýşüriň',en:'scroll down'},
+    slide1_tag:{ru:'Ирмик, булгур, гречка, нохут — отборное зерно для каждого дня.',tm:'Irmik, bulgur, greçka, nohut — her gün üçin saýlama dän.',en:'Semolina, bulgur, buckwheat, chickpeas — selected grain for every day.'},
+    slide2_tag:{ru:'Пенне, бургу, фарфалле, лингвини. Готово за 10 минут.',tm:'Penne, burgu, farfalle, linguine. 10 minutda taýýar.',en:'Penne, fusilli, farfalle, linguine. Ready in 10 minutes.'},
+    slide3_tag:{ru:'Чечевица и фасоль — источник растительного белка.',tm:'Merjimek we noýba — ösümlik belogynyň çeşmesi.',en:'Lentils and beans — a source of plant protein.'},
+    slide4_tag:{ru:'Длиннозёрный, балдо, османчик — от 500 г до 5 кг.',tm:'Uzyn däneli, baldo, osmançik — 500 g-dan 5 kg-a çenli.',en:'Long-grain, baldo, osmancik — from 500 g to 5 kg.'},
+    slide5_tag:{ru:'Овсяные хлопья «Геркулес» из цельного зерна.',tm:'Bütin dänden «Gerkules» süle perşonlary.',en:'“Gerkules” whole-grain oat flakes.'},
+    slide6_tag:{ru:'Жареные подсолнечные семечки — солёные и несолёные.',tm:'Gowrulan günebakar çigidi — duzly we duzsuz.',en:'Roasted sunflower seeds — salted and unsalted.'},
+    stat_cats:{ru:'категорий продукции',tm:'önüm kategoriýasy',en:'product categories'},
+    stat_skus:{ru:'наименований',tm:'görnüş',en:'products'},
+    stat_certs:{ru:'сертификата качества',tm:'hil şahadatnamasy',en:'quality certificates'},
+    stat_qc:{ru:'контроль качества',tm:'hil gözegçiligi',en:'quality control'},
+    cats_kicker:{ru:'Ассортимент',tm:'Görnüşler',en:'Range'},
+    cats_title:{ru:'Шесть категорий, один стандарт качества.',tm:'Alty kategoriýa, bir hil ölçegi.',en:'Six categories, one quality standard.'},
+    cat1_name:{ru:'Крупы',tm:'Ýarma',en:'Grains'},
+    cat2_name:{ru:'Макароны',tm:'Makaron',en:'Pasta'},
+    cat3_name:{ru:'Бобовые',tm:'Kösükliler',en:'Legumes'},
+    cat4_name:{ru:'Рис',tm:'Tüwi',en:'Rice'},
+    cat5_name:{ru:'Хлопья',tm:'Gerkules',en:'Flakes'},
+    cat6_name:{ru:'Семечки',tm:'Çigit',en:'Seeds'},
+    life_kick:{ru:'От поля до упаковки',tm:'Meýdandan gaba çenli',en:'From field to pack'},
+    life_title:{ru:'Каждая партия проходит очистку, калибровку и контроль качества.',tm:'Her tapgyr arassalanýar, kalibrlenýär we hil gözegçiliginden geçýär.',en:'Every batch is cleaned, calibrated and quality-checked.'},
+    reviews_kicker:{ru:'Отзывы',tm:'Synlar',en:'Reviews'},
+    reviews_title:{ru:'Нас выбирают дома и на полке.',tm:'Bizi öýde-de, tekjede-de saýlaýarlar.',en:'Chosen at home and on the shelf.'},
+    partners_kicker:{ru:'Партнёрам',tm:'Hyzmatdaşlara',en:'Partners'},
+    partners_title:{ru:'Оптовые поставки и дистрибуция.',tm:'Lomaý üpjünçilik we paýlaýyş.',en:'Wholesale supply and distribution.'},
+    partners_body:{ru:'Приглашаем магазины, сети и дистрибьюторов к сотрудничеству.',tm:'Dükanlary, ulgamlary we paýlaýjylary hyzmatdaşlyga çagyrýarys.',en:'We welcome shops, chains and distributors.'},
+    partners_cta:{ru:'Стать партнёром',tm:'Hyzmatdaş bolmak',en:'Become a partner'},
+    products_h:{ru:'Вся продукция Bakar',tm:'Bakar önümleriniň ählisi',en:'All Bakar products'},
+    products_p:{ru:'Шесть категорий базовых продуктов — крупы, макароны, бобовые, рис, хлопья и семечки. Halal, без ГМО, без глютена.',tm:'Alty kategoriýa esasy önüm — ýarma, makaron, kösükliler, tüwi, perşon we çigit. Halal, GMO-suz, glýutensiz.',en:'Six staple categories — grains, pasta, legumes, rice, flakes and seeds. Halal, non-GMO, gluten-free.'},
+    about_kicker:{ru:'О компании',tm:'Biz barada',en:'About'},
+    about_title:{ru:'Зерно, отобранное вручную.',tm:'Elde saýlanan dän.',en:'Grain, selected by hand.'},
+    about_p:{ru:'Bakar — туркменский производитель базовых продуктов питания под принципом «ýokary hilli» — высокое качество.',tm:'Bakar — «ýokary hilli» ýörelgesi bilen esasy azyk önümlerini öndüriji.',en:'Bakar is a Turkmen maker of staple foods guided by one principle — «ýokary hilli», high quality.'},
+    process_h:{ru:'Четыре шага к качеству.',tm:'Hilä tarap dört ädim.',en:'Four steps to quality.'},
+    step1_t:{ru:'Отбор сырья',tm:'Çig maly saýlamak',en:'Sourcing'},
+    step1_d:{ru:'Работаем напрямую с проверенными фермерами.',tm:'Ynamdar daýhanlar bilen göni işleýäris.',en:'We work directly with trusted farmers.'},
+    step2_t:{ru:'Очистка и калибровка',tm:'Arassalamak we kalibrlemek',en:'Cleaning & sorting'},
+    step2_d:{ru:'Каждая партия очищается и сортируется по размеру.',tm:'Her tapgyr arassalanýar we ölçegi boýunça saýlanýar.',en:'Every batch is cleaned and size-sorted.'},
+    step3_t:{ru:'Контроль качества',tm:'Hil gözegçiligi',en:'Quality control'},
+    step3_d:{ru:'Проверка по стандартам Halal и Non-GMO.',tm:'Halal we Non-GMO ölçeglerine görä barlag.',en:'Checked to Halal and Non-GMO standards.'},
+    step4_t:{ru:'Упаковка',tm:'Gaplamak',en:'Packing'},
+    step4_d:{ru:'Фасовка без консервантов, от 50 г до 5 кг.',tm:'Konserwantsyz gaplama, 50 g-dan 5 kg-a çenli.',en:'Packed without preservatives, 50 g to 5 kg.'},
+    geo_kicker:{ru:'География',tm:'Geografiýa',en:'Geography'},
+    geo_title:{ru:'Поставки по всему Туркменистану.',tm:'Tutuş Türkmenistan boýunça üpjünçilik.',en:'Delivered across Turkmenistan.'},
+    certs_kicker:{ru:'Гарантии',tm:'Kepillikler',en:'Guarantees'},
+    certs_h:{ru:'Сертифицировано в каждой упаковке.',tm:'Her gapda şahadatnamaly.',en:'Certified in every pack.'},
+    certs_p:{ru:'Продукция Bakar соответствует стандартам качества и отмечена знаками на упаковке.',tm:'Bakar önümleri hil ölçeglerine laýyk gelýär we gapda bellik edilýär.',en:'Bakar products meet quality standards and carry the marks on the pack.'},
+    certs_title:{ru:'Три знака качества.',tm:'Üç hil belgisi.',en:'Three marks of quality.'},
+    cert1_name:{ru:'Halal',tm:'Halal',en:'Halal'},
+    cert2_name:{ru:'Non-GMO',tm:'Non-GMO',en:'Non-GMO'},
+    cert3_name:{ru:'Gluten-free',tm:'Glýutensiz',en:'Gluten-free'},
+    q1_t:{ru:'Контроль партий',tm:'Tapgyr gözegçiligi',en:'Batch control'},
+    q1_d:{ru:'Каждая партия проверяется до фасовки.',tm:'Her tapgyr gaplanmazdan öň barlanýar.',en:'Every batch is checked before packing.'},
+    q2_t:{ru:'Без консервантов',tm:'Konserwantsyz',en:'No preservatives'},
+    q2_d:{ru:'Только натуральное сырьё в упаковке.',tm:'Diňe tebigy çig mal.',en:'Only natural ingredients inside.'},
+    q3_t:{ru:'Готово за 10 минут',tm:'10 minutda taýýar',en:'Ready in 10 minutes'},
+    q3_d:{ru:'Макароны Bakar варятся быстро и не развариваются.',tm:'Bakar makarony çalt bişýär we dagamaýar.',en:'Bakar pasta cooks fast and holds its shape.'},
+    q4_t:{ru:'Прослеживаемость',tm:'Yzarlanylýarlyk',en:'Traceability'},
+    q4_d:{ru:'От поля до полки — понятная цепочка поставок.',tm:'Meýdandan tekjä çenli düşnükli üpjünçilik zynjyry.',en:'From field to shelf — a clear supply chain.'},
+    contacts_h:{ru:'Свяжитесь с нами',tm:'Biz bilen habarlaşyň',en:'Get in touch'},
+    contacts_p:{ru:'Оптовые заказы, сотрудничество и вопросы по продукции — напишите нам.',tm:'Lomaý sargytlar, hyzmatdaşlyk we sowallar — bize ýazyň.',en:'Wholesale orders, partnership and product questions — write to us.'},
+    ci_addr:{ru:'Адрес',tm:'Salgy',en:'Address'},
+    ci_phone:{ru:'Телефон',tm:'Telefon',en:'Phone'},
+    ci_email:{ru:'E-mail',tm:'E-poçta',en:'E-mail'},
+    f_name:{ru:'Имя',tm:'Ady',en:'Name'},
+    f_company:{ru:'Компания',tm:'Kärhana',en:'Company'},
+    f_email:{ru:'E-mail или телефон',tm:'E-poçta ýa-da telefon',en:'E-mail or phone'},
+    f_msg:{ru:'Сообщение',tm:'Habar',en:'Message'},
+    f_send:{ru:'Отправить заявку',tm:'Arza ibermek',en:'Send request'},
+    foot_lead:{ru:'Крупы, макароны, бобовые, рис и семечки высокого качества. Произведено в Туркменистане.',tm:'Ýokary hilli ýarma, makaron, kösükliler, tüwi we çigit. Türkmenistanda öndürildi.',en:'High-quality grains, pasta, legumes, rice and seeds. Made in Turkmenistan.'},
+    foot_nav:{ru:'Разделы',tm:'Bölümler',en:'Sections'},
+    foot_contacts:{ru:'Контакты',tm:'Habarlaşmak',en:'Contacts'}
+  };
+  views = ['home','products','about','certs','contacts','notfound'];
+  applyTheme(t){ try{ document.documentElement.setAttribute('data-theme', t); }catch(e){} }
+  showLoader(mid){
+    const l = this.root && this.root.querySelector('[data-loader]');
+    if(!l || this.reduce){ if(mid) mid(); return; }
+    l.classList.add('show');
+    clearTimeout(this._l1); clearTimeout(this._l2);
+    this._l1 = setTimeout(()=>{ if(mid) mid(); }, 360);
+    this._l2 = setTimeout(()=>{ l.classList.remove('show'); }, 820);
+  }
+  setLangNow(lang){
+    const root = this.root; if(!root) return; this.lang = lang;
+    root.querySelectorAll('[data-i18n]').forEach(el=>{ const e = this.dict[el.dataset.i18n]; if(e && e[lang]!=null) el.innerHTML = e[lang]; });
+    root.querySelectorAll('.bk-lang button[data-lang]').forEach(b=>b.classList.toggle('on', b.dataset.lang===lang));
+  }
+  changeLang(lang){ if(lang===this.lang) return; this.showLoader(()=>this.setLangNow(lang)); }
+  setView(view, skipHash){
+    const root = this.root; if(!root) return;
+    if(this.views.indexOf(view)<0) view = 'notfound';
+    this.view = view;
+    root.querySelectorAll('[data-view]').forEach(v=>v.classList.toggle('active', v.dataset.view===view));
+    root.querySelectorAll('[data-nav]').forEach(a=>{ if(a.classList.contains('bk-tcard')||a.tagName==='DIV') return; a.classList.toggle('on', a.dataset.nav===view); });
+    if(!skipHash){ try{ location.hash = view==='home' ? 'home' : view; }catch(e){} }
+    root.querySelectorAll('[data-reveal]').forEach(el=>el.classList.remove('in'));
+    if(this.tick) requestAnimationFrame(()=>this.tick());
+  }
+  navigate(view){
+    if(view===this.view){ window.scrollTo({top:0, behavior: this.reduce?'auto':'smooth'}); return; }
+    this.showLoader(()=>{ this.setView(view); window.scrollTo(0,0); });
+  }
+  componentDidMount(){
+    let root;
+    try{
+      root = document.getElementById('bakar-site');
+      if(!root) return;
+      this.root = root; this.lang = 'ru';
+      const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.reduce = reduce;
+
+      let saved=null; try{ saved = localStorage.getItem('bakar-theme'); }catch(e){}
+      const prefersDark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+      this.applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+      const tbtn = root.querySelector('[data-theme-toggle]');
+      if(tbtn) tbtn.addEventListener('click',()=>{ const cur = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; this.showLoader(()=>{ this.applyTheme(cur); try{ localStorage.setItem('bakar-theme', cur); }catch(e){} }); });
+
+      root.querySelectorAll('.bk-lang button[data-lang]').forEach(b=>{ b.addEventListener('click',()=>this.changeLang(b.dataset.lang)); });
+
+      // navigation
+      root.querySelectorAll('a[data-nav]').forEach(a=>{ a.addEventListener('click',(ev)=>{ ev.preventDefault(); this.navigate(a.dataset.nav); }); });
+      root.querySelectorAll('.bk-tcard[data-nav]').forEach(c=>{ c.addEventListener('click',()=>this.navigate(c.dataset.nav)); });
+      const brand = root.querySelector('.bk-brand'); if(brand) brand.addEventListener('click',(ev)=>{ ev.preventDefault(); this.navigate('home'); });
+      window.addEventListener('hashchange', ()=>{ const v=(location.hash||'').replace('#','')||'home'; if(v!==this.view) this.navigate(v); });
+
+      const reveals = ()=>Array.prototype.slice.call(root.querySelectorAll('.bk-view.active [data-reveal]'));
+      const counts = ()=>Array.prototype.slice.call(root.querySelectorAll('.bk-view.active [data-count]'));
+      const done = [];
+      const countUp = (el)=>{ const to=+el.dataset.count, suf=el.dataset.suffix||'', dur=1200, t0=performance.now(); const step=(t)=>{ const p=Math.min(1,(t-t0)/dur); el.textContent=Math.round(to*(1-Math.pow(1-p,3)))+suf; if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); };
+      const header = root.querySelector('.bk-header'), prog = root.querySelector('.bk-prog > i'), car = ()=>root.querySelector('.bk-view.active .bk-carousel');
+      const seen = (el,m)=>{ const r=el.getBoundingClientRect(); return r.top < (window.innerHeight-(m||0)) && r.bottom > -60; };
+      const tick = ()=>{
+        if(!reduce){ for(const el of reveals()){ if(el.className.indexOf('in')<0 && seen(el, Math.min(120, window.innerHeight*0.08))) el.classList.add('in'); } }
+        else { reveals().forEach(el=>el.classList.add('in')); }
+        for(const el of counts()){ if(done.indexOf(el)<0 && seen(el, window.innerHeight*0.22)){ done.push(el); if(reduce){el.textContent=el.dataset.count+(el.dataset.suffix||'');} else countUp(el); } }
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const c = car(); const onhero = this.view==='home' && c && y < (c.offsetHeight - 90);
+        if(header){ header.classList.toggle('onhero', !!onhero); header.classList.toggle('solid', !onhero); }
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        if(prog) prog.style.width = (h>0 ? (y/h*100) : 0) + '%';
+      };
+      this.tick = tick;
+      let raf = 0;
+      const onScroll = ()=>{ if(raf) return; raf = requestAnimationFrame(()=>{ raf=0; tick(); }); };
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', onScroll);
+      if(!reduce) root.classList.add('bk-anim');
+
+      // carousel
+      this.initCarousel(root, reduce);
+
+      // initial view from hash
+      const start = (location.hash||'').replace('#','') || 'home';
+      this.setView(this.views.indexOf(start)>=0?start:'home', true);
+      tick(); requestAnimationFrame(tick); setTimeout(tick, 320);
+      setTimeout(()=>{ root.querySelectorAll('.bk-view.active [data-reveal]').forEach(e=>e.classList.add('in')); }, 3600);
+    }catch(err){
+      try{ if(root){ root.classList.remove('bk-anim'); root.querySelectorAll('[data-reveal]').forEach(e=>e.classList.add('in')); } }catch(e){}
+    }
+  }
+  initCarousel(root, reduce){
+    const car = root.querySelector('[data-carousel]'); if(!car) return;
+    const slides = Array.prototype.slice.call(car.querySelectorAll('.bk-slide'));
+    const dots = Array.prototype.slice.call(car.querySelectorAll('.bk-car-dots button'));
+    let i = 0, timer = null;
+    const go = (n)=>{ i=(n+slides.length)%slides.length; slides.forEach((s,k)=>s.classList.toggle('on',k===i)); dots.forEach((d,k)=>d.classList.toggle('on',k===i)); };
+    const next = ()=>go(i+1), prev = ()=>go(i-1);
+    const stop = ()=>{ if(timer){ clearInterval(timer); timer=null; } };
+    const play = ()=>{ stop(); if(!reduce) timer=setInterval(next, 5200); };
+    const np = car.querySelector('[data-car-next]'), pp = car.querySelector('[data-car-prev]');
+    if(np) np.addEventListener('click',()=>{ next(); play(); });
+    if(pp) pp.addEventListener('click',()=>{ prev(); play(); });
+    dots.forEach((d,k)=>d.addEventListener('click',()=>{ go(k); play(); }));
+    car.addEventListener('mouseenter', stop);
+    car.addEventListener('mouseleave', play);
+    let sx=0, drag=false;
+    car.addEventListener('pointerdown',(e)=>{ drag=true; sx=e.clientX; stop(); });
+    car.addEventListener('pointerup',(e)=>{ if(!drag) return; drag=false; const dx=e.clientX-sx; if(dx<-45) next(); else if(dx>45) prev(); play(); });
+    car.addEventListener('pointercancel',()=>{ drag=false; });
+    window.addEventListener('keydown',(e)=>{ if(this.view!=='home') return; if(e.key==='ArrowRight'){ next(); play(); } else if(e.key==='ArrowLeft'){ prev(); play(); } });
+    go(0); play();
+  }
+  renderVals(){ return {}; }
+}
+</script>
+</body>
+</html>

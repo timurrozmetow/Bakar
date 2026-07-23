@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 130" width="120" height="130">
+  <rect width="120" height="130" rx="26" fill="#10794a"/>
+  <g fill="#ffffff" transform="translate(0,4)">
+    <g id="p"><path d="M0 -16 C6.2 -7,6.2 7,0 16 C-6.2 7,-6.2 -7,0 -16 Z"/></g>
+    <use href="#p" transform="rotate(-12 60 78) translate(60 46)"/><use href="#p" transform="rotate(12 60 78) translate(60 46)"/>
+    <use href="#p" transform="rotate(-40 60 78) translate(60 46)"/><use href="#p" transform="rotate(40 60 78) translate(60 46)"/>
+    <use href="#p" transform="rotate(-68 60 78) translate(60 46)"/><use href="#p" transform="rotate(68 60 78) translate(60 46)"/>
+    <use href="#p" transform="rotate(-96 60 78) translate(60 46)"/><use href="#p" transform="rotate(96 60 78) translate(60 46)"/>
+    <path d="M43 72 C44 55,76 55,77 72 C71 63,66 65,60 65 C54 65,49 63,43 72 Z"/>
+    <path d="M60 73 L104 108 L87 108 L60 86 L33 108 L16 108 Z"/>
+  </g>
+</svg>

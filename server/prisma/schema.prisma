@@ -1,0 +1,146 @@
+// Bakar CMS — data model
+// Trilingual text fields are stored as JSON: { "tm": "...", "ru": "...", "en": "..." }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// Admin user who signs into the panel.
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Hero carousel slides on the home page.
+model Banner {
+  id        Int      @id @default(autoincrement())
+  /// trilingual { tm, ru, en }
+  title     Json
+  subtitle  Json
+  ctaLabel  Json
+  ctaHref   String   @default("#products")
+  image     String   @default("")
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+/// Product category (Крупы / Макароны / ...).
+model Category {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  /// trilingual name { tm, ru, en }
+  name        Json
+  /// short one-line tagline shown on cards { tm, ru, en }
+  tagline     Json
+  /// longer description { tm, ru, en }
+  description Json
+  image       String    @default("")
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  @@index([sortOrder])
+}
+
+/// A concrete product inside a category.
+model Product {
+  id          Int              @id @default(autoincrement())
+  categoryId  Int
+  category    Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  slug        String           @unique
+  /// trilingual name { tm, ru, en }
+  name        Json
+  description Json
+  image       String           @default("")
+  sortOrder   Int              @default(0)
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  variants    ProductVariant[]
+
+  @@index([categoryId])
+  @@index([sortOrder])
+}
+
+/// Packaging option for a product ("1 кг", "500 г", "5 кг").
+model ProductVariant {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  /// weight / packaging label, e.g. "1 кг"
+  weight    String
+  sortOrder Int      @default(0)
+
+  @@index([productId])
+}
+
+/// Quality certificate (Halal, Non-GMO, ...) with an optional file.
+model Certificate {
+  id          Int      @id @default(autoincrement())
+  /// trilingual title { tm, ru, en }
+  title       Json
+  description Json
+  image       String   @default("")
+  fileUrl     String   @default("")
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+/// Customer / partner testimonial.
+model Review {
+  id        Int      @id @default(autoincrement())
+  /// trilingual quote { tm, ru, en }
+  text      Json
+  author    String
+  /// trilingual role, e.g. "покупатель" { tm, ru, en }
+  role      Json
+  city      String   @default("")
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+/// "Стать партнёром" inbound request (public form submissions).
+model PartnerRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  company   String   @default("")
+  phone     String   @default("")
+  email     String   @default("")
+  message   String   @default("") @db.Text
+  status    String   @default("new") // new | in_progress | done
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/// Singleton content blocks keyed by name: home_stats, about, contacts, marquee, footer.
+model Setting {
+  key       String   @id
+  /// arbitrary JSON payload for this block
+  value     Json
+  updatedAt DateTime @updatedAt
+}
