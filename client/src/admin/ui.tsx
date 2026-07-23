@@ -84,6 +84,11 @@ export function Switch({ checked, onChange, label }: { checked: boolean; onChang
   return (
     <button
       type="button"
+      role="switch"
+      aria-checked={checked}
+      // Without a visible label the control is just a coloured pill, so give
+      // assistive tech something to announce.
+      aria-label={label ? undefined : 'Показывать на сайте'}
       onClick={() => onChange(!checked)}
       className="inline-flex items-center gap-2.5 text-sm font-medium text-ink"
     >

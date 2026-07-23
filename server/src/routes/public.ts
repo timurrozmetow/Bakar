@@ -4,6 +4,7 @@ import { asyncHandler, HttpError } from '../middleware/error.js';
 import { partnerRequestCreate } from '../validation.js';
 import { formLimiter } from '../middleware/rateLimit.js';
 import { notifyPartnerRequest } from '../lib/notify.js';
+import { loadSiteData } from '../lib/siteData.js';
 
 // Unauthenticated endpoints consumed by the public website.
 export const publicRouter = Router();
@@ -12,28 +13,7 @@ export const publicRouter = Router();
 publicRouter.get(
   '/site',
   asyncHandler(async (_req, res) => {
-    const [banners, categories, certificates, reviews, settings] = await Promise.all([
-      prisma.banner.findMany({ where: { isActive: true }, orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
-        include: {
-          products: {
-            where: { isActive: true },
-            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
-            include: { variants: { orderBy: { sortOrder: 'asc' } } },
-          },
-        },
-      }),
-      prisma.certificate.findMany({ where: { isActive: true }, orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] }),
-      prisma.review.findMany({ where: { isActive: true }, orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] }),
-      prisma.setting.findMany(),
-    ]);
-
-    const settingsMap: Record<string, unknown> = {};
-    for (const s of settings) settingsMap[s.key] = s.value;
-
-    res.json({ banners, categories, certificates, reviews, settings: settingsMap });
+    res.json(await loadSiteData());
   }),
 );
 

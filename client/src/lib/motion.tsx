@@ -1,5 +1,22 @@
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion, type Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
+
+/**
+ * Every animated element in the app uses `m` rather than `motion`.
+ *
+ * `motion.div` statically pulls in the entire feature set — drag, layout
+ * projection and all — even on a page that only fades things in. `m` ships the
+ * bare renderer, and `MotionProvider` below loads exactly the features we use
+ * (animations, exit, hover/tap/focus and whileInView). `strict` makes a stray
+ * `motion.*` throw during development instead of silently undoing the saving.
+ */
+export function MotionProvider({ children }: { children: ReactNode }) {
+  return (
+    <LazyMotion features={domAnimation} strict>
+      {children}
+    </LazyMotion>
+  );
+}
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -18,7 +35,7 @@ export function Reveal({
   as?: 'div' | 'section' | 'li' | 'article' | 'figure';
 }) {
   const reduce = useReducedMotion();
-  const MotionTag = motion[as];
+  const MotionTag = m[as];
   return (
     <MotionTag
       className={className}
@@ -35,7 +52,7 @@ export function Reveal({
 /** Container that staggers its <StaggerItem> children as they enter view. */
 export function Stagger({ children, className, gap = 0.08 }: { children: ReactNode; className?: string; gap?: number }) {
   return (
-    <motion.div
+    <m.div
       className={className}
       initial="hidden"
       whileInView="show"
@@ -43,7 +60,7 @@ export function Stagger({ children, className, gap = 0.08 }: { children: ReactNo
       variants={{ show: { transition: { staggerChildren: gap } } }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -55,9 +72,9 @@ export const staggerItem: Variants = {
 export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div className={className} variants={reduce ? undefined : staggerItem}>
+    <m.div className={className} variants={reduce ? undefined : staggerItem}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -65,15 +82,16 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
 export function FadeIn({ children, className }: { children: ReactNode; className?: string }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: EASE }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
-export { motion, useReducedMotion };
+export { AnimatePresence, useReducedMotion };
+export { m as motion };

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Phone, Mail, Trash2, Inbox } from 'lucide-react';
-import { useList, useCrud } from '../../lib/queries';
+import { useList, useCrud } from '../queries';
 import type { PartnerRequest } from '../../lib/types';
 import { PageHeader, Spinner, Badge, cn } from '../ui';
 import { ConfirmDialog } from '../components';

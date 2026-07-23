@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Quote } from 'lucide-react';
 import { useSiteData } from '../lib/queries';
 import { useLocale } from '../lib/i18n';
-import { mediaUrl } from '../lib/api';
 import type { StatItem } from '../lib/types';
 import { Seo } from '../lib/seo';
 import { Reveal, Stagger, StaggerItem, motion, useReducedMotion } from '../lib/motion';
@@ -43,11 +42,17 @@ export function Home() {
       <section className="relative flex min-h-[88vh] items-end overflow-hidden sm:min-h-[92vh]">
         {isLoading && <Skeleton className="absolute inset-0 rounded-none" />}
         {banners.map((b, i) => (
-          <div
-            key={b.id}
-            className={`bk-hero-slide ${i === slide ? 'on' : ''}`}
-            style={{ backgroundImage: `url(${mediaUrl(b.image)})` }}
-          />
+          <div key={b.id} className={`bk-hero-slide ${i === slide ? 'on' : ''}`}>
+            {/* The first slide is the LCP element: eager, high priority, and
+                preloaded from the HTML shell (see server/src/lib/spa.ts). */}
+            <Img
+              src={b.image}
+              alt=""
+              sizes="100vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchPriority={i === 0 ? 'high' : 'auto'}
+            />
+          </div>
         ))}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,20,14,.28) 0%, rgba(10,20,14,.35) 45%, rgba(8,16,11,.82) 100%)' }} />
         <div className="bk-wrap relative z-10 pb-20 pt-36 text-white sm:pb-24 sm:pt-40">
@@ -74,15 +79,26 @@ export function Home() {
               </div>
 
               {banners.length > 1 && (
-                <div className="mt-10 flex gap-2">
+                /* Each dot is a 44px-tall transparent hit area with a thin bar
+                   drawn inside it, so the target is tappable without changing
+                   how the control looks. */
+                <div className="mt-8 flex items-center gap-1">
                   {banners.map((b, i) => (
                     <button
                       key={b.id}
                       onClick={() => setSlide(i)}
                       aria-label={`${ui('a11y.nextSlide')} ${i + 1}`}
-                      className="h-1.5 rounded-full transition-all"
-                      style={{ width: i === slide ? 34 : 14, background: i === slide ? '#fff' : 'rgba(255,255,255,.45)' }}
-                    />
+                      aria-current={i === slide}
+                      className="group flex h-11 items-center px-2"
+                    >
+                      <span
+                        className="block h-1.5 rounded-full transition-all"
+                        style={{
+                          width: i === slide ? 34 : 14,
+                          background: i === slide ? '#fff' : 'rgba(255,255,255,.45)',
+                        }}
+                      />
+                    </button>
                   ))}
                 </div>
               )}

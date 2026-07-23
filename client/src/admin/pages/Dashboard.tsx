@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Images, FolderTree, Package, BadgeCheck, MessageSquareQuote, Inbox } from 'lucide-react';
 import type { ComponentType, ReactNode } from 'react';
-import { useList } from '../../lib/queries';
+import { useList } from '../queries';
 import type { PartnerRequest } from '../../lib/types';
 import { Badge, Card, PageHeader } from '../ui';
 

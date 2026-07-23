@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { useHead } from '../lib/seo';
 import { useSiteData } from '../lib/queries';
 import { useLocale } from '../lib/i18n';
 import { Reveal } from '../lib/motion';
@@ -26,6 +26,28 @@ export function ProductDetail() {
         .find((x) => x.product.slug === slug),
     [data, slug],
   );
+
+  // Computed before the early returns below so the head hook stays unconditional.
+  const seo = useMemo(() => {
+    if (!found) return null;
+    const name = tt(found.product.name);
+    const categoryName = tt(found.category.name);
+    const description = tt(found.product.description) || `${name} — ${categoryName}. BAKAR.`;
+    return {
+      title: `${name} — BAKAR`,
+      description,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name,
+        description,
+        category: categoryName,
+        brand: { '@type': 'Brand', name: 'BAKAR' },
+      },
+    };
+  }, [found, tt]);
+
+  useHead({ title: seo?.title ?? '', description: seo?.description, jsonLd: seo?.jsonLd ?? null });
 
   const backLink = (
     <Link to="/products" className="inline-flex items-center gap-1.5 text-sm font-bold text-accent">
@@ -73,27 +95,9 @@ export function ProductDetail() {
   const name = tt(product.name);
   const categoryName = tt(category.name);
   const description = tt(product.description);
-  const metaDescription = description || `${name} — ${categoryName}. BAKAR.`;
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name,
-    description: metaDescription,
-    category: categoryName,
-    brand: { '@type': 'Brand', name: 'BAKAR' },
-  };
 
   return (
     <div className="pt-28 sm:pt-32">
-      <Helmet>
-        <title>{`${name} — BAKAR`}</title>
-        <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={`${name} — BAKAR`} />
-        <meta property="og:description" content={metaDescription} />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
-
       <section className="bk-wrap pb-24">
         {backLink}
 

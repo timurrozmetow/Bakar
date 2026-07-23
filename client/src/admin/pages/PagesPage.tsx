@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plus, X, Save } from 'lucide-react';
-import { useSetting } from '../../lib/queries';
+import { useSetting } from '../queries';
 import { emptyI18n, type I18nText, type StatItem } from '../../lib/types';
 import { Button, Card, Field, Input, PageHeader } from '../ui';
 import { TranslatableField } from '../components';

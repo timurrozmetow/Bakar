@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 import { useLocale } from './i18n';
 import type { I18nText } from './types';
 
@@ -57,35 +57,79 @@ const META: Record<MetaKey, { title: I18nText; description: I18nText }> = {
   },
 };
 
-const ORG_JSONLD = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: SITE_NAME,
-  description: 'Производитель базовых продуктов питания. Halal, без ГМО, без глютена.',
-  address: { '@type': 'PostalAddress', addressCountry: 'TM', addressLocality: 'Aşgabat' },
-  areaServed: 'TM',
-};
+/**
+ * Head management, hand-rolled instead of react-helmet-async.
+ *
+ * Crawlers never depend on this: the server already writes the real title,
+ * description, OG tags and structured data into the HTML shell (see
+ * server/src/lib/spa.ts). All that is left for the client is keeping the head
+ * honest during in-app navigation, which is a dozen lines of DOM writes — not
+ * worth ~16 KB of library in every visitor's bundle.
+ *
+ * Tags are updated in place rather than appended, so the server's versions are
+ * overwritten instead of duplicated.
+ */
+function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
+  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
 
+function upsertJsonLd(id: string, data: object | null) {
+  const selector = `script[type="application/ld+json"][data-seo="${id}"]`;
+  let el = document.head.querySelector<HTMLScriptElement>(selector);
+  if (!data) {
+    el?.remove();
+    return;
+  }
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.dataset.seo = id;
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+}
+
+export function useHead(opts: { title: string; description?: string; lang?: string; jsonLd?: object | null }) {
+  const { title, description, lang } = opts;
+  // Serialised so a fresh object literal on every render does not re-run the effect.
+  const jsonLd = opts.jsonLd ? JSON.stringify(opts.jsonLd) : null;
+
+  useEffect(() => {
+    if (lang) document.documentElement.lang = lang;
+    // An empty title means "not resolved yet" — leave what the server wrote.
+    if (!title) return;
+    document.title = title;
+    upsertMeta('property', 'og:title', title);
+    upsertMeta('property', 'og:site_name', SITE_NAME);
+    upsertMeta('property', 'og:type', 'website');
+    upsertMeta('property', 'og:image', '/og-image.svg');
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
+    upsertMeta('name', 'theme-color', '#10794a');
+    if (description) {
+      upsertMeta('name', 'description', description);
+      upsertMeta('property', 'og:description', description);
+    }
+  }, [title, description, lang]);
+
+  useEffect(() => {
+    upsertJsonLd('route', jsonLd ? (JSON.parse(jsonLd) as object) : null);
+  }, [jsonLd]);
+}
+
+/** Head tags for one of the fixed public pages. */
 export function Seo({ page }: { page: MetaKey }) {
   const { locale, tt } = useLocale();
   const meta = META[page];
-  const title = tt(meta.title);
-  const description = tt(meta.description);
-  const htmlLang = locale === 'tm' ? 'tk' : locale;
-
-  return (
-    <Helmet>
-      <html lang={htmlLang} />
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta property="og:site_name" content={SITE_NAME} />
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content="/og-image.svg" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="theme-color" content="#10794a" />
-      <script type="application/ld+json">{JSON.stringify(ORG_JSONLD)}</script>
-    </Helmet>
-  );
+  useHead({
+    title: tt(meta.title),
+    description: tt(meta.description),
+    lang: locale === 'tm' ? 'tk' : locale,
+  });
+  return null;
 }

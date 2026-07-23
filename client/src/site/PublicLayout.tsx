@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from '../lib/motion';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { ScrollProgress, BackToTop, PageLoader } from '../components/ux';

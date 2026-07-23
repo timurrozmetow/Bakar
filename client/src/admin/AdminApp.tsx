@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './auth';
 import { Spinner } from './ui';
 import { AdminLayout } from './AdminLayout';
@@ -23,10 +24,13 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 /**
  * The whole admin panel, loaded as one lazy chunk.
  * Auth state lives here so public visitors never mount it (or hit /auth/me).
+ * The toaster lives here too — only the admin raises toasts, and mounting it
+ * globally put `sonner` in the bundle every public visitor downloads.
  */
 export default function AdminApp() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="login" element={<LoginPage />} />
         <Route

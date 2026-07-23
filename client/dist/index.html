@@ -6,15 +6,19 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#10794a" />
     <meta name="description" content="BAKAR — простые продукты, сделанные добросовестно. Крупы, макароны, бобовые, рис, хлопья, семечки. Halal, без ГМО, без глютена. Туркменистан." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Manrope is self-hosted (see index.css) — no third-party font connection.
+         All three subsets are preloaded because every page shows them together:
+         Cyrillic body copy, the Latin wordmark, and Turkmen diacritics in the
+         kicker and marquee (ý, ş, ň) which live in latin-ext. -->
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-latin-ext.woff2" as="font" type="font/woff2" crossorigin />
     <title>BAKAR — простые продукты, сделанные добросовестно</title>
-    <script type="module" crossorigin src="/assets/index-Cn-ndpxs.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-L5LcWo6c.css">
+    <script type="module" crossorigin src="/assets/index-Qii0fF3Y.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-r6kJnPbG.js">
+    <link rel="modulepreload" crossorigin href="/assets/query-DlHMMWqq.js">
+    <link rel="modulepreload" crossorigin href="/assets/motion-CirVED48.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DLz7ZTbt.css">
   </head>
   <body>
     <div id="root"></div>

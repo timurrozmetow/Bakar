@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
-import { useList, useCrud, useReorder } from '../../lib/queries';
+import { useList, useCrud, useReorder } from '../queries';
 import { emptyI18n, type Banner } from '../../lib/types';
 import { Button, PageHeader, Spinner, Switch, Badge } from '../ui';
 import { Modal, ConfirmDialog, TranslatableField, ImageUpload, EntityRow, RowThumb, SortableList } from '../components';

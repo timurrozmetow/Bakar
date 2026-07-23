@@ -2,6 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Manrope, self-hosted ────────────────────────────────────────────────
+   Served from our own origin instead of fonts.googleapis.com: Google's CSS
+   was a render-blocking request that also forced a second connection to
+   fonts.gstatic.com, adding ~700 ms to the critical path. One variable file
+   per subset covers every weight we use (400–800). Only the three subsets
+   the site actually needs are shipped — Latin (+ext, for ä/ň/ş/ž) and
+   Cyrillic; Greek, Vietnamese and Cyrillic-ext are dropped. */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/manrope-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/manrope-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
 /* ── Bakar design tokens (ported from the Claude Design макет) ───────── */
 :root {
   --font-heading: 'Manrope', system-ui, sans-serif;
@@ -291,14 +326,49 @@ a {
 }
 
 /* hero carousel */
+/* Slides hold a real <img> rather than a CSS background: a background image is
+   invisible to the preload scanner, which made the LCP element wait for JS. */
 .bk-hero-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
   transition: opacity 0.9s var(--bk-ease);
-  background-size: cover;
-  background-position: center;
 }
 .bk-hero-slide.on {
   opacity: 1;
+}
+.bk-hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* reading-progress bar */
+/* Driven by the scroll timeline where available, which keeps it off the main
+   thread entirely; ux.tsx supplies a reflow-free JS fallback elsewhere. */
+.bk-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 3px;
+  background: var(--bk-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+@supports (animation-timeline: scroll()) {
+  .bk-scroll-progress {
+    animation: bk-scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes bk-scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }

@@ -22,7 +22,9 @@ export function Footer({ data }: { data?: SiteData }) {
         </div>
 
         <div>
-          <h5 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">Разделы</h5>
+          {/* h2, not h5: the page goes h1 → h2 and skipping levels breaks the
+              document outline for screen readers. Size comes from the class. */}
+          <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">Разделы</h2>
           <ul className="space-y-3 text-sm text-white/80">
             <li><Link to="/products" className="hover:text-white">{ui('nav.products')}</Link></li>
             <li><Link to="/about" className="hover:text-white">{ui('nav.about')}</Link></li>
@@ -32,7 +34,7 @@ export function Footer({ data }: { data?: SiteData }) {
         </div>
 
         <div>
-          <h5 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">{ui('nav.contacts')}</h5>
+          <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-white/50">{ui('nav.contacts')}</h2>
           <ul className="space-y-3 text-sm text-white/80">
             {contacts?.address && <li>{tt(contacts.address)}</li>}
             {contacts?.phone && <li><a href={`tel:${contacts.phone}`} className="hover:text-white">{contacts.phone}</a></li>}

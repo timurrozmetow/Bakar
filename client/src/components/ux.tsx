@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
-import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
+import { AnimatePresence, motion } from '../lib/motion';
 import { useLocale } from '../lib/i18n';
 import { BrandMark } from './BrandMark';
 
@@ -43,17 +43,53 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
   );
 }
 
-/** Thin accent progress bar at the very top, tied to scroll position. */
+/**
+ * Thin accent progress bar at the very top, tied to scroll position.
+ *
+ * Where `animation-timeline: scroll()` is supported the bar is driven entirely
+ * by CSS on the compositor and no JavaScript runs at all. The fallback below
+ * never reads a layout property inside the scroll handler — page height is
+ * measured only on resize — so scrolling cannot trigger a forced reflow.
+ */
 export function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
-  return (
-    <motion.div
-      style={{ scaleX }}
-      className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left bg-accent"
-      aria-hidden
-    />
-  );
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof CSS !== 'undefined' && CSS.supports?.('animation-timeline', 'scroll()')) return;
+    const el = ref.current;
+    if (!el) return;
+
+    let max = 0;
+    let frame = 0;
+
+    const measure = () => {
+      max = document.documentElement.scrollHeight - window.innerHeight;
+    };
+    const paint = () => {
+      frame = 0;
+      el.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+
+    measure();
+    paint();
+    const ro = new ResizeObserver(() => {
+      measure();
+      paint();
+    });
+    ro.observe(document.documentElement);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return <div ref={ref} className="bk-scroll-progress" aria-hidden />;
 }
 
 /** Floating "back to top" button that appears after scrolling. */

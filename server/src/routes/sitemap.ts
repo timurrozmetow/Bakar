@@ -53,3 +53,67 @@ sitemapRouter.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${base}/sitemap.xml\n`);
 });
+
+/** First non-empty translation, preferring Russian. */
+function pickRu(value: unknown): string {
+  if (value && typeof value === 'object') {
+    const v = value as Record<string, string>;
+    return (v.ru || v.en || v.tm || '').trim();
+  }
+  return '';
+}
+
+// GET /llms.txt — a Markdown map of the site for language models.
+// Without this route the SPA catch-all answered with HTML, which has neither an
+// H1 nor Markdown links, so the file failed validation. See llmstxt.org.
+sitemapRouter.get(
+  '/llms.txt',
+  asyncHandler(async (req, res) => {
+    const base = baseUrl(req);
+    const categories = await prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+      include: {
+        products: {
+          where: { isActive: true },
+          orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+        },
+      },
+    });
+
+    const lines = [
+      '# BAKAR',
+      '',
+      '> Туркменский производитель базовых продуктов питания: крупы, макароны, бобовые,',
+      '> рис, хлопья и семечки. Halal, без ГМО, без глютена. Сайт доступен на туркменском,',
+      '> русском и английском языках.',
+      '',
+      '## Разделы',
+      '',
+      `- [Главная](${base}/): баннеры, ассортимент, отзывы и сертификаты`,
+      `- [Продукция](${base}/products): полный каталог по категориям`,
+      `- [О нас](${base}/about): производство от поля до упаковки`,
+      `- [Сертификаты](${base}/certificates): Halal, Non-GMO, gluten-free и контроль качества`,
+      `- [Контакты](${base}/contacts): адрес, телефон и заявка на сотрудничество`,
+      '',
+    ];
+
+    for (const category of categories) {
+      const name = pickRu(category.name) || `Категория ${category.id}`;
+      lines.push(`## ${name}`, '');
+      const tagline = pickRu(category.tagline);
+      if (tagline) lines.push(`${tagline}`, '');
+      for (const product of category.products) {
+        const title = pickRu(product.name) || product.slug;
+        const summary = pickRu(product.description).replace(/\s+/g, ' ').slice(0, 160);
+        lines.push(`- [${title}](${base}/products/${product.slug})${summary ? `: ${summary}` : ''}`);
+      }
+      lines.push('');
+    }
+
+    lines.push('## Дополнительно', '', `- [Карта сайта](${base}/sitemap.xml): все адреса в формате XML`, '');
+
+    res.type('text/plain; charset=utf-8');
+    res.send(lines.join('\n'));
+  }),
+);

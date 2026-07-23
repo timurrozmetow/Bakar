@@ -12,7 +12,8 @@ import { sitemapRouter } from './routes/sitemap.js';
 import { errorHandler, notFound } from './middleware/error.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 import { UPLOAD_DIR } from './middleware/upload.js';
-import { injectMeta, metaForPath } from './lib/spa.js';
+import { metaForPath, renderShell } from './lib/spa.js';
+import { loadSiteData } from './lib/siteData.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLIENT_DIST = path.resolve(__dirname, '../../client/dist');
@@ -60,8 +61,12 @@ export function createApp() {
       }
       try {
         const html = readFileSync(indexFile, 'utf8');
-        const { meta, jsonLd } = await metaForPath(req.path);
-        res.type('html').send(injectMeta(html, meta, jsonLd));
+        const [{ meta, jsonLd }, site] = await Promise.all([metaForPath(req.path), loadSiteData()]);
+        // The shell carries live content, so it must be revalidated every time.
+        res.setHeader('Cache-Control', 'no-cache');
+        res
+          .type('html')
+          .send(renderShell({ html, dist: CLIENT_DIST, pathname: req.path, meta, jsonLd, site }));
       } catch (err) {
         next(err);
       }

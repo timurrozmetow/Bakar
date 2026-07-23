@@ -1,4 +1,7 @@
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import { prisma } from './prisma.js';
+import type { SitePayload } from './siteData.js';
 
 interface Meta {
   title: string;
@@ -29,6 +32,15 @@ const STATIC_META: Record<string, Meta> = {
     title: 'Контакты — BAKAR',
     description: 'Сотрудничество для магазинов, сетей и дистрибьюторов.',
   },
+};
+
+const ORGANIZATION = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE,
+  description: 'Производитель базовых продуктов питания. Halal, без ГМО, без глютена.',
+  address: { '@type': 'PostalAddress', addressCountry: 'TM', addressLocality: 'Aşgabat' },
+  areaServed: 'TM',
 };
 
 const esc = (s: string) =>
@@ -72,8 +84,91 @@ export async function metaForPath(pathname: string): Promise<{ meta: Meta; jsonL
   return { meta: STATIC_META[clean] ?? STATIC_META['/'] };
 }
 
-/** Injects title/description/OG tags (and optional JSON-LD) into the built index.html. */
-export function injectMeta(html: string, meta: Meta, jsonLd?: object): string {
+// ── Critical CSS ────────────────────────────────────────────────────────────
+// The built stylesheet is one small file (~26 KB raw / ~8 KB gzipped). Left as
+// a <link> it blocks the first paint for a whole extra round trip, so it is
+// folded into the HTML instead. Read once per process — a new build means a new
+// hashed filename and a PM2 restart, which re-reads it.
+
+const MAX_INLINE_CSS = 60 * 1024;
+const LINK_TAG = /<link\b[^>]*>/gi;
+
+let cssCache: { tag: string; css: string } | null | undefined;
+
+function findStylesheet(html: string, dist: string): { tag: string; css: string } | null {
+  for (const tag of html.match(LINK_TAG) ?? []) {
+    if (!/rel=["']stylesheet["']/i.test(tag)) continue;
+    const href = /href=["']([^"']+)["']/i.exec(tag)?.[1];
+    if (!href?.startsWith('/')) continue;
+    const file = path.join(dist, href);
+    if (!existsSync(file)) continue;
+    const css = readFileSync(file, 'utf8');
+    if (css.length > MAX_INLINE_CSS) return null;
+    return { tag, css };
+  }
+  return null;
+}
+
+function inlineCss(html: string, dist: string): string {
+  if (cssCache === undefined) cssCache = findStylesheet(html, dist);
+  if (!cssCache) return html;
+  // A literal </style> cannot occur inside CSS, so no escaping is needed.
+  return html.replace(cssCache.tag, `<style>${cssCache.css}</style>`);
+}
+
+// ── LCP preload ─────────────────────────────────────────────────────────────
+// The hero image comes from data the client only learns about after its first
+// API call, so without a hint the browser cannot start downloading it until JS
+// has booted. This makes it discoverable in the initial HTML instead.
+
+const IMG_WIDTHS = [320, 480, 640, 960, 1280, 1600];
+
+function heroPreload(site: SitePayload): string {
+  const image = site.banners[0]?.image;
+  if (typeof image !== 'string' || !image.startsWith('/uploads/')) return '';
+  const name = image.slice('/uploads/'.length);
+  if (!/\.(webp|jpe?g|png|avif)$/i.test(name)) return '';
+  const srcset = IMG_WIDTHS.map((w) => `/img/${name}?w=${w} ${w}w`).join(', ');
+  return (
+    `<link rel="preload" as="image" href="${esc(`/img/${name}?w=1600`)}"` +
+    ` imagesrcset="${esc(srcset)}" imagesizes="100vw" fetchpriority="high" />`
+  );
+}
+
+// ── Shell rendering ─────────────────────────────────────────────────────────
+
+const LINE_SEPARATOR = String.fromCharCode(0x2028);
+const PARAGRAPH_SEPARATOR = String.fromCharCode(0x2029);
+
+/**
+ * JSON safe to embed in a <script> block: `<` is escaped so a string in the
+ * data can never close the tag, and the two separators that JSON allows raw
+ * but JavaScript source does not are escaped as well.
+ */
+function safeJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .split(LINE_SEPARATOR)
+    .join('\\u2028')
+    .split(PARAGRAPH_SEPARATOR)
+    .join('\\u2029');
+}
+
+/**
+ * Builds the HTML actually served to a visitor: per-route meta and structured
+ * data for crawlers, the stylesheet inlined, an LCP preload hint, and the site
+ * payload embedded so the first render does not wait on `/api/public/site`.
+ */
+export function renderShell(opts: {
+  html: string;
+  dist: string;
+  pathname: string;
+  meta: Meta;
+  jsonLd?: object;
+  site: SitePayload;
+}): string {
+  const { dist, pathname, meta, jsonLd, site } = opts;
+
   const tags = [
     `<title>${esc(meta.title)}</title>`,
     `<meta name="description" content="${esc(meta.description)}" />`,
@@ -81,14 +176,20 @@ export function injectMeta(html: string, meta: Meta, jsonLd?: object): string {
     `<meta property="og:description" content="${esc(meta.description)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="${SITE}" />`,
-    jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : '',
+    pathname === '/' ? heroPreload(site) : '',
+    `<script type="application/ld+json" data-seo="org">${safeJson(ORGANIZATION)}</script>`,
+    // data-seo="route" is the handle the client updates on in-app navigation,
+    // so page-specific structured data is replaced rather than duplicated.
+    jsonLd ? `<script type="application/ld+json" data-seo="route">${safeJson(jsonLd)}</script>` : '',
+    `<script>window.__BAKAR_SITE__=${safeJson(site)}</script>`,
   ]
     .filter(Boolean)
     .join('\n    ');
 
-  // Replace the build-time title, then append the rest before </head>.
-  return html
+  // Drop the build-time title/description, then append ours before </head>.
+  const html = inlineCss(opts.html, dist)
     .replace(/<title>[\s\S]*?<\/title>/i, '')
-    .replace(/<meta\s+name="description"[^>]*>/i, '')
-    .replace('</head>', `    ${tags}\n  </head>`);
+    .replace(/<meta\s+name="description"[^>]*>/i, '');
+
+  return html.replace('</head>', `    ${tags}\n  </head>`);
 }
