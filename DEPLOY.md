@@ -99,7 +99,7 @@ sudo mysql
 ```
 ```sql
 CREATE DATABASE bakar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'bakar'@'localhost' IDENTIFIED BY 'СИЛЬНЫЙ_ПАРОЛЬ_БД';
+CREATE USER 'bakar'@'localhost' IDENTIFIED BY 'new_password';
 GRANT ALL PRIVILEGES ON bakar.* TO 'bakar'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
