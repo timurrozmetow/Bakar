@@ -28,7 +28,16 @@ model Banner {
   subtitle  Json
   ctaLabel  Json
   ctaHref   String   @default("#products")
+  /// Artwork for large screens, and the fallback whenever a narrower variant
+  /// is not supplied. The three fields below let a banner be re-cropped per
+  /// device rather than merely rescaled; each is optional.
   image     String   @default("")
+  /// phones, up to 639px
+  imageSm   String   @default("")
+  /// tablets, 640–1023px
+  imageMd   String   @default("")
+  /// laptops, 1024–1439px
+  imageLg   String   @default("")
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())

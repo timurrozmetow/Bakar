@@ -12,7 +12,12 @@ export const bannerCreate = z.object({
   subtitle: i18nStringOptional,
   ctaLabel: i18nStringOptional,
   ctaHref: z.string().default('#products'),
+  // `image` is the large-screen artwork and the fallback; the rest are the
+  // per-breakpoint crops and may be left empty.
   image: z.string().default(''),
+  imageSm: z.string().default(''),
+  imageMd: z.string().default(''),
+  imageLg: z.string().default(''),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),
 });

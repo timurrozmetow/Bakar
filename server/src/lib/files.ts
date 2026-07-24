@@ -6,7 +6,11 @@ import { prisma } from './prisma.js';
 /** True when the path still belongs to some record — then it must not be removed from disk. */
 async function isStillReferenced(url: string): Promise<boolean> {
   const [banner, category, product, certImage, certFile] = await Promise.all([
-    prisma.banner.count({ where: { image: url } }),
+    // A banner holds four artworks and the same file may legitimately serve
+    // more than one breakpoint, so all four columns have to be consulted.
+    prisma.banner.count({
+      where: { OR: [{ image: url }, { imageSm: url }, { imageMd: url }, { imageLg: url }] },
+    }),
     prisma.category.count({ where: { image: url } }),
     prisma.product.count({ where: { image: url } }),
     prisma.certificate.count({ where: { image: url } }),

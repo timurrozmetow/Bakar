@@ -37,7 +37,14 @@ export interface Banner {
   subtitle: I18nText;
   ctaLabel: I18nText;
   ctaHref: string;
+  /** Large screens, and the fallback for any breakpoint left empty. */
   image: string;
+  /** Phones, up to 639px. */
+  imageSm: string;
+  /** Tablets, 640–1023px. */
+  imageMd: string;
+  /** Laptops, 1024–1439px. */
+  imageLg: string;
   sortOrder: number;
   isActive: boolean;
 }

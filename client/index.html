@@ -12,10 +12,12 @@
     <meta name="theme-color" content="#10794a" />
     <meta name="description" content="BAKAR — простые продукты, сделанные добросовестно. Крупы, макароны, бобовые, рис, хлопья, семечки. Halal, без ГМО, без глютена. Туркменистан." />
     <!-- Stolzl is self-hosted (see index.css) — no third-party font connection.
-         Regular and Bold carry the body copy and every heading, so both are
-         preloaded; Medium is only used for buttons and labels and can arrive
-         a moment later without a visible reflow. -->
+         All three weights appear above the fold: Regular in body copy, Bold in
+         headings, Medium in the navigation and buttons. Medium was left out of
+         the preload at first and, being discoverable only after the stylesheet
+         parsed, ended up 724 ms deep in the critical chain. -->
     <link rel="preload" href="/fonts/stolzl-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/stolzl-medium.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/stolzl-bold.woff2" as="font" type="font/woff2" crossorigin />
     <title>BAKAR — простые продукты, сделанные добросовестно</title>
   </head>

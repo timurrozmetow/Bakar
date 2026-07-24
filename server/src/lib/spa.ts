@@ -132,19 +132,75 @@ function inlineCss(html: string, dist: string): string {
 // The hero image comes from data the client only learns about after its first
 // API call, so without a hint the browser cannot start downloading it until JS
 // has booted. This makes it discoverable in the initial HTML instead.
+//
+// One hint per screen band, and the bands are mutually exclusive on purpose.
+// `<picture>` picks the first <source> whose media matches, so plain max-width
+// queries are enough there. A preload link has no such precedence: every link
+// whose media matches fires. With max-width-only queries a phone matched all
+// four and downloaded the entire set — the opposite of the point.
+//
+// HERO_BANDS must stay in step with HERO_SOURCES in
+// client/src/components/HeroImage.tsx; both resolve a band to the same file,
+// so the preloaded image is the one <picture> then renders.
 
 const IMG_WIDTHS = [320, 480, 640, 960, 1280, 1600];
 
-function heroPreload(site: SitePayload): string {
-  const image = site.banners[0]?.image;
-  if (typeof image !== 'string' || !image.startsWith('/uploads/')) return '';
+const HERO_BANDS = [
+  { field: 'imageSm', min: 0, max: 639 },
+  { field: 'imageMd', min: 640, max: 1023 },
+  { field: 'imageLg', min: 1024, max: 1439 },
+  { field: 'image', min: 1440, max: Infinity },
+] as const;
+
+/** Builds `/img/...` srcset for an uploaded path, or null if it is not resizable. */
+function resizableSrcSet(image: unknown): { href: string; srcset: string } | null {
+  if (typeof image !== 'string' || !image.startsWith('/uploads/')) return null;
   const name = image.slice('/uploads/'.length);
-  if (!/\.(webp|jpe?g|png|avif)$/i.test(name)) return '';
-  const srcset = IMG_WIDTHS.map((w) => `/img/${name}?w=${w} ${w}w`).join(', ');
-  return (
-    `<link rel="preload" as="image" href="${esc(`/img/${name}?w=1600`)}"` +
-    ` imagesrcset="${esc(srcset)}" imagesizes="100vw" fetchpriority="high" />`
-  );
+  if (!/\.(webp|jpe?g|png|avif)$/i.test(name)) return null;
+  return {
+    href: `/img/${name}?w=1600`,
+    srcset: IMG_WIDTHS.map((w) => `/img/${name}?w=${w} ${w}w`).join(', '),
+  };
+}
+
+function bandMedia(min: number, max: number): string {
+  if (min === 0 && max === Infinity) return '';
+  if (min === 0) return `(max-width: ${max}px)`;
+  if (max === Infinity) return `(min-width: ${min}px)`;
+  return `(min-width: ${min}px) and (max-width: ${max}px)`;
+}
+
+function heroPreload(site: SitePayload): string {
+  const banner = site.banners[0] as Record<string, unknown> | undefined;
+  if (!banner) return '';
+
+  const fallback = typeof banner.image === 'string' ? banner.image : '';
+
+  // Resolve every band, then merge neighbours that landed on the same file, so
+  // a banner carrying a single artwork emits one unconditional hint rather than
+  // four that differ only in their media query.
+  const groups: { file: string; min: number; max: number }[] = [];
+  for (const band of HERO_BANDS) {
+    const value = banner[band.field];
+    const file = (typeof value === 'string' && value) || fallback;
+    const last = groups[groups.length - 1];
+    if (last && last.file === file) last.max = band.max;
+    else groups.push({ file, min: band.min, max: band.max });
+  }
+
+  return groups
+    .map(({ file, min, max }) => {
+      const built = resizableSrcSet(file);
+      if (!built) return '';
+      const media = bandMedia(min, max);
+      return (
+        `<link rel="preload" as="image"${media ? ` media="${esc(media)}"` : ''}` +
+        ` href="${esc(built.href)}" imagesrcset="${esc(built.srcset)}"` +
+        ` imagesizes="100vw" fetchpriority="high" />`
+      );
+    })
+    .filter(Boolean)
+    .join('\n    ');
 }
 
 // ── Shell rendering ─────────────────────────────────────────────────────────

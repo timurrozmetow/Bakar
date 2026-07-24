@@ -216,12 +216,14 @@ export function TranslatableField({
 /** Image / file upload with preview. */
 export function ImageUpload({
   label,
+  hint,
   value,
   onChange,
   accept = 'image/*',
   kind = 'image',
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (url: string) => void;
   accept?: string;
@@ -245,7 +247,8 @@ export function ImageUpload({
 
   return (
     <div className="space-y-1.5">
-      <span className="text-sm font-semibold text-ink">{label}</span>
+      <span className="block text-sm font-semibold text-ink">{label}</span>
+      {hint && <span className="block text-xs text-muted">{hint}</span>}
       <div className="flex items-center gap-3">
         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-line bg-surface-2 text-muted">
           {busy ? (

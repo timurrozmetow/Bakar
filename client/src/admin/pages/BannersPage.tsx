@@ -14,9 +14,40 @@ const blank = (): Draft => ({
   ctaLabel: emptyI18n(),
   ctaHref: '#products',
   image: '',
+  imageSm: '',
+  imageMd: '',
+  imageLg: '',
   sortOrder: 0,
   isActive: true,
 });
+
+/**
+ * The four artworks a banner can carry. Only the first is required — any
+ * breakpoint left empty falls back to it, so an editor can supply one file and
+ * add tighter crops later.
+ */
+const ARTWORK_FIELDS = [
+  {
+    field: 'image' as const,
+    label: 'Большие экраны — обязательно',
+    hint: 'От 1440 px и шире. Рекомендуемый размер 2560 × 1440. Используется и как запасной вариант для остальных размеров.',
+  },
+  {
+    field: 'imageLg' as const,
+    label: 'Ноутбуки',
+    hint: '1024–1439 px. Рекомендуемый размер 2048 × 1280.',
+  },
+  {
+    field: 'imageMd' as const,
+    label: 'Планшеты',
+    hint: '640–1023 px. Рекомендуемый размер 1600 × 1600 — кадр ближе к квадрату.',
+  },
+  {
+    field: 'imageSm' as const,
+    label: 'Телефоны',
+    hint: 'До 639 px. Рекомендуемый размер 1080 × 1920 — вертикальный кадр.',
+  },
+];
 
 export function BannersPage() {
   const { data: banners, isLoading } = useList<Banner>('banners');
@@ -118,7 +149,25 @@ export function BannersPage() {
         <Field label="Ссылка кнопки" hint="Например: /products или #products">
           <Input value={draft.ctaHref} onChange={(e) => setDraft({ ...draft, ctaHref: e.target.value })} />
         </Field>
-        <ImageUpload label="Фоновое изображение" value={draft.image} onChange={(image) => setDraft({ ...draft, image })} />
+        <div className="space-y-4 rounded-[14px] border border-line p-4">
+          <div>
+            <div className="text-sm font-bold text-ink">Фоновые изображения</div>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              Загрузите отдельный кадр под каждую ширину экрана — посетителю придёт только тот,
+              который подходит его устройству. Достаточно заполнить первое поле: остальные
+              подставятся из него.
+            </p>
+          </div>
+          {ARTWORK_FIELDS.map(({ field, label, hint }) => (
+            <ImageUpload
+              key={field}
+              label={label}
+              hint={hint}
+              value={draft[field]}
+              onChange={(url) => setDraft({ ...draft, [field]: url })}
+            />
+          ))}
+        </div>
         <div className="flex items-center gap-6">
           <Field label="Порядок">
             <Input

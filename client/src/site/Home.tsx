@@ -8,6 +8,7 @@ import { Seo } from '../lib/seo';
 import { Reveal, Stagger, StaggerItem, motion, useReducedMotion } from '../lib/motion';
 import { CardGridSkeleton, Skeleton } from '../components/ux';
 import { Img } from '../components/Img';
+import { HeroImage } from '../components/HeroImage';
 
 export function Home() {
   const { data, isLoading } = useSiteData();
@@ -55,13 +56,7 @@ export function Home() {
           <div key={b.id} className={`bk-hero-slide ${i === slide ? 'on' : ''}`}>
             {/* The first slide is the LCP element: eager, high priority, and
                 preloaded from the HTML shell (see server/src/lib/spa.ts). */}
-            <Img
-              src={b.image}
-              alt=""
-              sizes="100vw"
-              loading={i === 0 ? 'eager' : 'lazy'}
-              fetchPriority={i === 0 ? 'high' : 'auto'}
-            />
+            <HeroImage banner={b} eager={i === 0} />
           </div>
         ))}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,20,14,.28) 0%, rgba(10,20,14,.35) 45%, rgba(8,16,11,.82) 100%)' }} />

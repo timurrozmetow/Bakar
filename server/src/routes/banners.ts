@@ -7,5 +7,7 @@ export const bannersRouter = crudRouter({
   createSchema: bannerCreate,
   updateSchema: bannerUpdate,
   orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
-  fileFields: ['image'],
+  // All four so replaced or deleted artwork is cleaned off disk, not just the
+  // large-screen one.
+  fileFields: ['image', 'imageSm', 'imageMd', 'imageLg'],
 });
