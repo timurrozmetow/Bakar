@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import argon2 from 'argon2';
 import { PrismaClient } from '@prisma/client';
 import { env } from '../src/lib/env.js';
+import { ABOUT_DEFAULT } from './content/about.js';
 
 const prisma = new PrismaClient();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -283,19 +284,7 @@ async function main() {
       { value: '3', label: t('hil şahadatnamasy', 'сертификата качества', 'quality certificates') },
       { value: '100%', label: t('hil gözegçiligi', 'контроль качества', 'quality control') },
     ],
-    about: {
-      heading: t('Biz hakda', 'О нас', 'About us'),
-      lead: t(
-        'Ýönekeý önümler, ak ýürekden.',
-        'Простые продукты, сделанные добросовестно.',
-        'Simple products, made in good faith.',
-      ),
-      body: t(
-        'Meýdandan gaplama çenli: her tapgyr arassalaýyşdan, kalibrlemeden we hil barlagyndan geçýär.',
-        'От поля до упаковки: каждая партия проходит очистку, калибровку и контроль качества.',
-        'From field to package: each batch is cleaned, calibrated and quality-checked.',
-      ),
-    },
+    about: ABOUT_DEFAULT,
     contacts: {
       address: t('Türkmenistan, Aşgabat', 'Туркменистан, Ашхабад', 'Turkmenistan, Ashgabat'),
       phone: '+993 12 000000',

@@ -89,6 +89,21 @@ const DICT = {
   'a11y.nextSlide': { tm: 'Indiki', ru: 'Следующий слайд', en: 'Next slide' },
   // about badges
   'about.quality': { tm: 'Kepillendirilen hil', ru: 'Гарантированное качество', en: 'Guaranteed quality' },
+  // about page sections — used as fallbacks when the admin leaves a heading empty
+  'about.story': { tm: 'Taryhymyz', ru: 'Наша история', en: 'Our story' },
+  'about.process': { tm: 'Önümçilik', ru: 'Производство', en: 'Production' },
+  'about.processLead': {
+    tm: 'Meýdandan gaplama çenli — her tapgyr gözegçilikde.',
+    ru: 'От поля до упаковки — каждый этап под контролем.',
+    en: 'From field to package — every stage under control.',
+  },
+  'about.values': { tm: 'Ýörelgelerimiz', ru: 'Принципы работы', en: 'How we work' },
+  'about.valuesLead': {
+    tm: 'Näme üçin bize ynanýarlar.',
+    ru: 'Почему нам доверяют.',
+    en: 'Why we are trusted.',
+  },
+  'about.gallery': { tm: 'Suratlarda önümçilik', ru: 'Производство в фотографиях', en: 'Inside the plant' },
 } as const;
 
 export type UIKey = keyof typeof DICT;

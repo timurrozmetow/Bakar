@@ -120,6 +120,37 @@ export interface StatItem {
   label: I18nText;
 }
 
+/** One stage of the production process on the About page. */
+export interface AboutStep {
+  image: string;
+  title: I18nText;
+  text: I18nText;
+}
+
+/** One principle in the "how we work" list. */
+export interface AboutValue {
+  title: I18nText;
+  text: I18nText;
+}
+
+/**
+ * The About page content block. Everything past `body` is optional — each
+ * section simply disappears until it is filled in, so the page stays coherent
+ * while photos of the plant are still being collected.
+ */
+export interface AboutBlock {
+  heading: I18nText;
+  lead: I18nText;
+  body: I18nText;
+  /** Lead photo beside the intro. */
+  image: string;
+  story: { heading: I18nText; body: I18nText };
+  steps: AboutStep[];
+  values: AboutValue[];
+  /** Photos of the plant, shown as a grid. */
+  gallery: string[];
+}
+
 /** Aggregated payload from GET /api/public/site. */
 export interface SiteData {
   banners: Banner[];
@@ -129,7 +160,7 @@ export interface SiteData {
   settings: {
     home_hero?: { headline: I18nText };
     home_stats?: StatItem[];
-    about?: { heading: I18nText; lead: I18nText; body: I18nText };
+    about?: Partial<AboutBlock>;
     contacts?: {
       address: I18nText;
       phone: string;
