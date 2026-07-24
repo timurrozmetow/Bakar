@@ -73,12 +73,17 @@ export function Products() {
                       to={`/products/${p.slug}`}
                       className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-surface transition duration-300 hover:-translate-y-1 hover:border-accent"
                     >
-                      <div className="aspect-[4/5] overflow-hidden bg-surface-2">
+                      {/* object-contain, not cover: these are packshots, and
+                          cropping them to fill the frame sliced the bottom off
+                          every bag. A square frame is the compromise that suits
+                          both a tall single pack and a wider group photo — with
+                          a portrait frame the latter sat between empty bands. */}
+                      <div className="aspect-square overflow-hidden bg-surface-2">
                         <Img
                           src={p.image}
                           alt={tt(p.name)}
                           sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                          className="h-full w-full object-cover transition duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.05]"
+                          className="h-full w-full object-contain p-3 transition duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04] sm:p-4"
                         />
                       </div>
 

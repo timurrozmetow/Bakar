@@ -53,6 +53,8 @@ export interface ProductVariant {
   id: number;
   productId: number;
   weight: string;
+  /** Packshot of this exact pack; empty means "use the product image". */
+  image: string;
   sortOrder: number;
 }
 

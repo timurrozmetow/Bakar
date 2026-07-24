@@ -361,6 +361,27 @@ a {
   }
 }
 
+/* Short fade for content swapped in place, e.g. the packshot on the product
+   page when another packaging option is picked. */
+.bk-fade-in {
+  animation: bk-fade-in 0.35s var(--bk-ease);
+}
+@keyframes bk-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-fade-in {
+    animation: none;
+  }
+}
+
 /* hero carousel */
 /* Slides hold a real <img> rather than a CSS background: a background image is
    invisible to the preload scanner, which made the LCP element wait for JS. */

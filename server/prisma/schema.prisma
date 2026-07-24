@@ -93,6 +93,10 @@ model ProductVariant {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   /// weight / packaging label, e.g. "1 кг"
   weight    String
+  /// Optional packshot of this exact pack. Sizes often differ in more than the
+  /// printed weight, so selecting one on the product page swaps the photo.
+  /// Falls back to the product image when empty.
+  image     String   @default("")
   sortOrder Int      @default(0)
 
   @@index([productId])

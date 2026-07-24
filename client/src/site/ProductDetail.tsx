@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { useHead } from '../lib/seo';
@@ -48,6 +48,16 @@ export function ProductDetail() {
   }, [found, tt]);
 
   useHead({ title: seo?.title ?? '', description: seo?.description, jsonLd: seo?.jsonLd ?? null });
+
+  // Selected packaging. Kept as an id rather than an index so it survives the
+  // list changing, and reset whenever a different product is opened.
+  const [variantId, setVariantId] = useState<number | null>(null);
+  useEffect(() => setVariantId(null), [slug]);
+
+  const variants = found?.product.variants ?? [];
+  const selected = variants.find((v) => v.id === variantId) ?? null;
+  // A pack without its own photo falls back to the product image.
+  const shownImage = selected?.image || found?.product.image || '';
 
   const backLink = (
     <Link to="/products" className="inline-flex items-center gap-1.5 text-sm font-bold text-accent">
@@ -102,12 +112,17 @@ export function ProductDetail() {
         {backLink}
 
         <div className="mt-6 grid gap-10 lg:grid-cols-2">
+          {/* Same reasoning as the catalogue card: a packshot must be shown
+              whole, and the image filled its box only by cropping the pack.
+              The key makes React swap the element when the packaging changes,
+              so the new photo fades in instead of popping. */}
           <div className="bk-card aspect-square overflow-hidden bg-surface-2">
             <Img
-              src={product.image}
-              alt={name}
+              key={shownImage}
+              src={shownImage}
+              alt={selected ? `${name} — ${selected.weight}` : name}
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="w-full rounded-[24px] object-cover"
+              className="bk-fade-in h-full w-full rounded-[24px] object-contain p-6 sm:p-8"
             />
           </div>
 
@@ -117,16 +132,42 @@ export function ProductDetail() {
 
             {description && <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">{description}</p>}
 
-            {product.variants.length > 0 && (
+            {variants.length > 0 && (
               <div className="mt-8">
                 <span className="bk-kick">{ui('products.packaging')}</span>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {product.variants.map((v) => (
-                    <span key={v.id} className="rounded-full bg-surface-2 px-3 py-1.5 text-sm font-semibold">
-                      {v.weight}
-                    </span>
-                  ))}
-                </div>
+                {/* Clickable only when at least one pack has its own photo —
+                    otherwise every choice would show the same picture and the
+                    control would promise something it cannot deliver. */}
+                {variants.some((v) => v.image) ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {variants.map((v) => {
+                      const on = selected ? v.id === selected.id : false;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => setVariantId(on ? null : v.id)}
+                          className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                            on
+                              ? 'border-accent bg-accent text-on-accent'
+                              : 'border-line bg-surface-2 text-ink hover:border-accent hover:text-accent'
+                          }`}
+                        >
+                          {v.weight}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {variants.map((v) => (
+                      <span key={v.id} className="rounded-full bg-surface-2 px-3 py-1.5 text-sm font-semibold">
+                        {v.weight}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

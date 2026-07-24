@@ -13,7 +13,7 @@ interface Draft {
   image: string;
   sortOrder: number;
   isActive: boolean;
-  variants: { weight: string; sortOrder: number }[];
+  variants: { weight: string; image: string; sortOrder: number }[];
 }
 
 const blank = (categoryId: number): Draft => ({
@@ -80,12 +80,12 @@ export function ProductsPage() {
       image: p.image,
       sortOrder: p.sortOrder,
       isActive: p.isActive,
-      variants: p.variants.map((v) => ({ weight: v.weight, sortOrder: v.sortOrder })),
+      variants: p.variants.map((v) => ({ weight: v.weight, image: v.image ?? '', sortOrder: v.sortOrder })),
     });
     setEditing(p);
   }
   function save() {
-    // variants are sent as { weight, sortOrder } (server creates the rows); cast to the CRUD input type.
+    // variants are sent as { weight, image, sortOrder } (server creates the rows); cast to the CRUD input type.
     const payload = { ...draft, variants: draft.variants.filter((v) => v.weight.trim()) } as unknown as Partial<Product>;
     if (editing) crud.update({ id: editing.id, data: payload });
     else crud.create(payload);
@@ -204,32 +204,51 @@ export function ProductsPage() {
         {/* variants */}
         <div className="space-y-2">
           <span className="text-sm font-semibold text-ink">Варианты фасовки</span>
+          <p className="text-xs leading-relaxed text-muted">
+            Если у фасовки своя упаковка — загрузите её фото, и при выборе этого веса на сайте
+            покажется именно она. Без фото используется общее фото товара.
+          </p>
           <div className="space-y-2">
             {draft.variants.map((v, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input
-                  value={v.weight}
-                  placeholder="напр. 1 кг"
-                  onChange={(e) => {
-                    const variants = [...draft.variants];
-                    variants[i] = { ...variants[i], weight: e.target.value };
-                    setDraft({ ...draft, variants });
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setDraft({ ...draft, variants: draft.variants.filter((_, j) => j !== i) })}
-                  className="rounded-lg p-2 text-muted transition hover:bg-surface-2 hover:text-red-600"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+              <div key={i} className="rounded-[12px] border border-line p-3">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={v.weight}
+                    placeholder="напр. 1 кг"
+                    onChange={(e) => {
+                      const variants = [...draft.variants];
+                      variants[i] = { ...variants[i], weight: e.target.value };
+                      setDraft({ ...draft, variants });
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, variants: draft.variants.filter((_, j) => j !== i) })}
+                    aria-label="Удалить фасовку"
+                    className="rounded-lg p-2 text-muted transition hover:bg-surface-2 hover:text-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-3">
+                  <ImageUpload
+                    label="Фото этой фасовки"
+                    hint="Необязательно"
+                    value={v.image}
+                    onChange={(image) => {
+                      const variants = [...draft.variants];
+                      variants[i] = { ...variants[i], image };
+                      setDraft({ ...draft, variants });
+                    }}
+                  />
+                </div>
               </div>
             ))}
           </div>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setDraft({ ...draft, variants: [...draft.variants, { weight: '', sortOrder: draft.variants.length }] })}
+            onClick={() => setDraft({ ...draft, variants: [...draft.variants, { weight: '', image: '', sortOrder: draft.variants.length }] })}
           >
             <Plus className="h-4 w-4" /> Добавить фасовку
           </Button>

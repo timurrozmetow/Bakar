@@ -15,6 +15,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:upgrade-marquee": "tsx prisma/upgradeMarquee.ts",
+    "db:add-seeds": "tsx prisma/addSeedsProducts.ts",
     "db:reset": "prisma migrate reset --force"
   },
   "prisma": {

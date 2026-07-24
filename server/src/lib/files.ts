@@ -5,7 +5,7 @@ import { prisma } from './prisma.js';
 
 /** True when the path still belongs to some record — then it must not be removed from disk. */
 async function isStillReferenced(url: string): Promise<boolean> {
-  const [banner, category, product, certImage, certFile] = await Promise.all([
+  const [banner, category, product, variant, certImage, certFile] = await Promise.all([
     // A banner holds four artworks and the same file may legitimately serve
     // more than one breakpoint, so all four columns have to be consulted.
     prisma.banner.count({
@@ -13,10 +13,11 @@ async function isStillReferenced(url: string): Promise<boolean> {
     }),
     prisma.category.count({ where: { image: url } }),
     prisma.product.count({ where: { image: url } }),
+    prisma.productVariant.count({ where: { image: url } }),
     prisma.certificate.count({ where: { image: url } }),
     prisma.certificate.count({ where: { fileUrl: url } }),
   ]);
-  return banner + category + product + certImage + certFile > 0;
+  return banner + category + product + variant + certImage + certFile > 0;
 }
 
 /**

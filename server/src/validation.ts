@@ -36,6 +36,8 @@ export const categoryUpdate = categoryCreate;
 
 export const variantInput = z.object({
   weight: z.string().min(1),
+  /** Optional packshot for this exact pack; falls back to the product image. */
+  image: z.string().default(''),
   sortOrder: z.number().int().default(0),
 });
 
