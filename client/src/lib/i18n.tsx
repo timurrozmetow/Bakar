@@ -74,6 +74,7 @@ const DICT = {
   // hero / misc
   'hero.scroll': { tm: 'aşak süýşüriň', ru: 'листайте вниз', en: 'scroll down' },
   'certs.openPdf': { tm: 'PDF açmak', ru: 'Открыть PDF', en: 'Open PDF' },
+  'certs.view': { tm: 'Şahadatnamany görmek', ru: 'Посмотреть сертификат', en: 'View certificate' },
   'common.loading': { tm: 'Ýüklenýär…', ru: 'Загрузка…', en: 'Loading…' },
   'common.error': { tm: 'Ýalňyşlyk ýüze çykdy', ru: 'Произошла ошибка', en: 'Something went wrong' },
   'common.retry': { tm: 'Gaýtadan', ru: 'Повторить', en: 'Retry' },
@@ -83,6 +84,7 @@ const DICT = {
   'a11y.menu': { tm: 'Menýu', ru: 'Меню', en: 'Menu' },
   'a11y.lang': { tm: 'Dil', ru: 'Язык', en: 'Language' },
   'a11y.backTop': { tm: 'Ýokary', ru: 'Наверх', en: 'Back to top' },
+  'a11y.close': { tm: 'Ýapmak', ru: 'Закрыть', en: 'Close' },
   'a11y.prevSlide': { tm: 'Öňki', ru: 'Предыдущий слайд', en: 'Previous slide' },
   'a11y.nextSlide': { tm: 'Indiki', ru: 'Следующий слайд', en: 'Next slide' },
   // about badges
