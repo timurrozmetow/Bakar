@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './site/PublicLayout';
 import { Home } from './site/Home';
 import { NotFound } from './site/NotFound';
-import { PageLoader } from './components/ux';
+import { PageLoader, LoaderOverlay } from './components/ux';
 
 // Secondary public pages and the whole admin load on demand.
 const Products = lazy(() => import('./site/Products').then((m) => ({ default: m.Products })));
@@ -17,8 +17,11 @@ const AdminApp = lazy(() => import('./admin/AdminApp'));
 
 export function App() {
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
+    <>
+      {/* Forced brand loader for theme/language/page changes — sits above all. */}
+      <LoaderOverlay />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
         {/* Public website */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
@@ -33,7 +36,8 @@ export function App() {
         <Route path="/admin/*" element={<AdminApp />} />
 
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
+        </Routes>
+      </Suspense>
+    </>
   );
 }

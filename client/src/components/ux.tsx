@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion, EASE } from '../lib/motion';
 import { useLocale } from '../lib/i18n';
+import { useLoaderVisible } from '../lib/loader';
 import { BrandMark } from './BrandMark';
 
 /**
@@ -14,15 +15,9 @@ import { BrandMark } from './BrandMark';
  * completion. The visible "BAKAR" is decoration; the localized status text lives
  * in an sr-only node so screen readers hear "Загрузка…", not the brand.
  */
-export function PageLoader() {
+/** The loader visual itself — brand mark, indeterminate bar, sr-only status. */
+function LoaderVisual() {
   const { ui } = useLocale();
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setShow(true), 150);
-    return () => clearTimeout(t);
-  }, []);
-  if (!show) return null;
-
   return (
     <div className="bk-loader" role="status" aria-live="polite" aria-busy="true">
       <BrandMark className="bk-loader-mark" />
@@ -32,6 +27,43 @@ export function PageLoader() {
       <div className="bk-loader-word" aria-hidden="true">BAKAR</div>
       <span className="sr-only">{ui('common.loading')}</span>
     </div>
+  );
+}
+
+export function PageLoader() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 150);
+    return () => clearTimeout(t);
+  }, []);
+  if (!show) return null;
+  return <LoaderVisual />;
+}
+
+/**
+ * Forced full-screen loader, shown for a minimum time on theme / language / page
+ * changes (driven by lib/loader). Rendered once at the app root. It appears
+ * instantly to fully mask the change, then fades out when the window elapses.
+ * The mark/bar already honour reduced motion; only the fade-out is gated here.
+ */
+export function LoaderOverlay() {
+  const visible = useLoaderVisible();
+  const reduce = useReducedMotion();
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="forced-loader"
+          className="fixed inset-0 z-[300]"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduce ? 0 : 0.3, ease: EASE }}
+        >
+          <LoaderVisual />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

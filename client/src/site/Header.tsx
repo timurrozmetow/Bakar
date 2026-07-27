@@ -4,6 +4,7 @@ import { Moon, Sun, Menu, X } from 'lucide-react';
 import { BrandMark } from '../components/BrandMark';
 import { useLocale } from '../lib/i18n';
 import { useTheme } from '../lib/theme';
+import { showLoader } from '../lib/loader';
 import { LOCALES, LOCALE_LABEL } from '../lib/types';
 
 const LINKS = [
@@ -66,7 +67,10 @@ export function Header() {
           {LOCALES.map((l) => (
             <button
               key={l}
-              onClick={() => setLocale(l)}
+              onClick={() => {
+                if (locale !== l) showLoader();
+                setLocale(l);
+              }}
               className={`rounded-pill px-2.5 py-1.5 text-[11.5px] font-bold transition ${
                 locale === l ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'
               }`}
@@ -77,7 +81,10 @@ export function Header() {
         </div>
 
         <button
-          onClick={toggle}
+          onClick={() => {
+            showLoader();
+            toggle();
+          }}
           className="grid h-10 w-10 place-items-center rounded-pill border border-line bg-surface text-ink transition hover:bg-surface-2"
           aria-label={ui('a11y.theme')}
         >
@@ -113,7 +120,10 @@ export function Header() {
             {LOCALES.map((l) => (
               <button
                 key={l}
-                onClick={() => setLocale(l)}
+                onClick={() => {
+                if (locale !== l) showLoader();
+                setLocale(l);
+              }}
                 className={`rounded-pill px-3 py-1.5 text-xs font-bold ${
                   locale === l ? 'bg-accent text-on-accent' : 'bg-surface-2 text-muted'
                 }`}

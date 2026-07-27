@@ -1,19 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion, EASE } from '../lib/motion';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BackToTop } from '../components/ux';
 import { useSiteData } from '../lib/queries';
+import { showLoader } from '../lib/loader';
 
 export function PublicLayout() {
   const { data } = useSiteData();
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
+  const firstRoute = useRef(true);
 
-  // Scroll to top on route change.
+  // Scroll to top on route change, and force the brand loader on every page
+  // switch — but not on the initial mount, which is already a fresh load.
   useEffect(() => {
     window.scrollTo({ top: 0 });
+    if (firstRoute.current) {
+      firstRoute.current = false;
+      return;
+    }
+    showLoader();
   }, [pathname]);
 
   // The shell (header + footer) and each page render immediately; a page shows
