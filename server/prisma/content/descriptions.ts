@@ -59,6 +59,11 @@ export const PRODUCT_DESCRIPTIONS: Record<string, { tm: string; ru: string; en: 
     'Плоская длинная паста из твёрдых сортов пшеницы — для лёгких сливочных и томатных соусов.',
     'Flat long durum-wheat pasta — for light cream and tomato sauces.',
   ),
+  wermisel: t(
+    'Berk bugdaýdan inçe wermişel — çalt bişýär, çorbalar we garnirler üçin.',
+    'Тонкая вермишель из твёрдых сортов пшеницы — быстро варится, хороша в супах и гарнирах.',
+    'Thin durum-wheat vermicelli — cooks fast, great in soups and sides.',
+  ),
 
   // ── Бобовые ─────────────────────────────────────────────────
   'krasnaya-chechevitsa': t(
