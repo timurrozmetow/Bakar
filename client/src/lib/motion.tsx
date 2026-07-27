@@ -18,7 +18,9 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   );
 }
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+/** The one brand ease. Exported so route/hero transitions reuse it instead of
+ *  re-typing the cubic-bezier literal. */
+export const EASE = [0.22, 1, 0.36, 1] as const;
 
 /** Scroll-reveal: fades + rises into view once. */
 export function Reveal({
@@ -51,6 +53,10 @@ export function Reveal({
 
 /** Container that staggers its <StaggerItem> children as they enter view. */
 export function Stagger({ children, className, gap = 0.08 }: { children: ReactNode; className?: string; gap?: number }) {
+  const reduce = useReducedMotion();
+  // Under reduced motion, don't orchestrate at all — render a plain wrapper so
+  // the no-motion guarantee doesn't rely on each StaggerItem dropping variants.
+  if (reduce) return <div className={className}>{children}</div>;
   return (
     <m.div
       className={className}

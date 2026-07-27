@@ -50,6 +50,9 @@ export function About() {
                   src={about.image}
                   alt={tt(about?.lead)}
                   sizes="(max-width: 1024px) 100vw, 45vw"
+                  // Above-the-fold on /about and a likely LCP element — opt out
+                  // of the load-fade so it paints eagerly.
+                  priority
                   className="aspect-[4/3] w-full object-cover"
                 />
               </div>

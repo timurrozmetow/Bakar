@@ -37,7 +37,7 @@ export function Products() {
         <div className="mt-8 flex flex-wrap gap-2">
           <button
             onClick={() => setActive('all')}
-            className={`rounded-pill px-4 py-2 text-sm font-bold transition ${active === 'all' ? 'bg-accent text-on-accent' : 'bg-surface-2 text-muted hover:text-ink'}`}
+            className={`bk-press rounded-pill px-4 py-2 text-sm font-bold transition ${active === 'all' ? 'bg-accent text-on-accent' : 'bg-surface-2 text-muted hover:text-ink'}`}
           >
             {ui('products.all')}
           </button>
@@ -45,7 +45,7 @@ export function Products() {
             <button
               key={c.id}
               onClick={() => setActive(c.id)}
-              className={`rounded-pill px-4 py-2 text-sm font-bold transition ${active === c.id ? 'bg-accent text-on-accent' : 'bg-surface-2 text-muted hover:text-ink'}`}
+              className={`bk-press rounded-pill px-4 py-2 text-sm font-bold transition ${active === c.id ? 'bg-accent text-on-accent' : 'bg-surface-2 text-muted hover:text-ink'}`}
             >
               {tt(c.name)}
             </button>
@@ -54,7 +54,7 @@ export function Products() {
       </section>
 
       <div className="bk-wrap space-y-16 pb-24 sm:space-y-20">
-        {isLoading && <CardGridSkeleton count={8} />}
+        {isLoading && <CardGridSkeleton variant="product" count={8} />}
         {nothingFound && <p className="py-10 text-center text-muted">{ui('products.empty')}</p>}
 
         {shown.map((c) => (

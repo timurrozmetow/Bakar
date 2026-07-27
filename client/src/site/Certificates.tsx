@@ -26,7 +26,7 @@ export function Certificates() {
 
         {isLoading ? (
           <div className="mt-12">
-            <CardGridSkeleton />
+            <CardGridSkeleton variant="cert" />
           </div>
         ) : certs.length === 0 ? (
           <p className="mt-12 text-muted">{ui('products.empty')}</p>

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { motion, useReducedMotion } from '../lib/motion';
+import { motion, useReducedMotion, EASE } from '../lib/motion';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { BackToTop, PageLoader } from '../components/ux';
+import { BackToTop } from '../components/ux';
 import { useSiteData } from '../lib/queries';
 
 export function PublicLayout() {
-  const { data, isLoading } = useSiteData();
+  const { data } = useSiteData();
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
 
@@ -16,9 +16,10 @@ export function PublicLayout() {
     window.scrollTo({ top: 0 });
   }, [pathname]);
 
-  // First visit only — afterwards the query is cached, so navigation stays instant.
-  if (isLoading) return <PageLoader />;
-
+  // The shell (header + footer) and each page render immediately; a page shows
+  // its own matched skeleton while data loads (in prod the payload is embedded,
+  // so there is no loading state). The full-screen PageLoader is reserved for
+  // the App-level Suspense fallback that gates a lazy route chunk.
   return (
     <div className="flex min-h-screen flex-col bg-bg">
       <Header />
@@ -27,7 +28,7 @@ export function PublicLayout() {
           key={pathname}
           initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.35, ease: EASE }}
         >
           <Outlet />
         </motion.div>

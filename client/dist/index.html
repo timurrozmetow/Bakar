@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Apply the saved theme before first paint. Without this, <html> ships
+         data-theme="light" and ThemeProvider only switches to dark in a
+         post-mount effect, so a dark-mode visitor sees a light flash (loader
+         and content) on every cold load. ThemeProvider then just keeps sync. -->
+    <script>
+      try {
+        var t = localStorage.getItem('bakar_theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -20,11 +30,11 @@
     <link rel="preload" href="/fonts/stolzl-medium.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/stolzl-bold.woff2" as="font" type="font/woff2" crossorigin />
     <title>BAKAR — простые продукты, сделанные добросовестно</title>
-    <script type="module" crossorigin src="/assets/index-ClrtJ1k5.js"></script>
+    <script type="module" crossorigin src="/assets/index-DEjU2mPN.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-r6kJnPbG.js">
     <link rel="modulepreload" crossorigin href="/assets/query-DlHMMWqq.js">
     <link rel="modulepreload" crossorigin href="/assets/motion-CirVED48.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BJeYST7p.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-f7Ev7WUh.css">
   </head>
   <body>
     <div id="root"></div>

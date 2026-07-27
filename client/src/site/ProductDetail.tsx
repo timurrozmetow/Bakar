@@ -72,12 +72,22 @@ export function ProductDetail() {
         <section className="bk-wrap pb-24">
           <Skeleton className="h-4 w-40" />
           <div className="mt-6 grid gap-10 lg:grid-cols-2">
-            <Skeleton className="aspect-square w-full rounded-[24px]" />
+            {/* rounded-[30px] to match the bk-card --r-lg frame the photo sits in */}
+            <Skeleton className="aspect-square w-full rounded-[30px]" />
             <div className="space-y-4">
               <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-10 w-2/3" />
+              <Skeleton className="h-11 w-3/4" />
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-5/6" />
+              {/* packaging kick + chips, so the CTA below does not jump down */}
+              <div className="pt-4">
+                <Skeleton className="h-3 w-24" />
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Skeleton className="h-9 w-16 rounded-full" />
+                  <Skeleton className="h-9 w-16 rounded-full" />
+                  <Skeleton className="h-9 w-16 rounded-full" />
+                </div>
+              </div>
               <Skeleton className="h-12 w-48" />
             </div>
           </div>
@@ -122,7 +132,7 @@ export function ProductDetail() {
               src={shownImage}
               alt={selected ? `${name} — ${selected.weight}` : name}
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="bk-fade-in h-full w-full rounded-[24px] object-contain p-6 sm:p-8"
+              className="h-full w-full rounded-[24px] object-contain p-6 sm:p-8"
             />
           </div>
 
@@ -148,7 +158,7 @@ export function ProductDetail() {
                           type="button"
                           aria-pressed={on}
                           onClick={() => setVariantId(on ? null : v.id)}
-                          className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                          className={`bk-press rounded-full border px-4 py-2 text-sm font-semibold transition ${
                             on
                               ? 'border-accent bg-accent text-on-accent'
                               : 'border-line bg-surface-2 text-ink hover:border-accent hover:text-accent'

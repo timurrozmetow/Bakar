@@ -5,7 +5,7 @@ import { useSiteData } from '../lib/queries';
 import { useLocale } from '../lib/i18n';
 import { toI18n, type StatItem } from '../lib/types';
 import { Seo } from '../lib/seo';
-import { Reveal, Stagger, StaggerItem, motion, useReducedMotion } from '../lib/motion';
+import { Reveal, Stagger, StaggerItem, motion, useReducedMotion, EASE } from '../lib/motion';
 import { CardGridSkeleton, Skeleton } from '../components/ux';
 import { Img } from '../components/Img';
 import { HeroImage } from '../components/HeroImage';
@@ -35,13 +35,14 @@ export function Home() {
     return Array.from({ length: 5 }, () => words).flat();
   }, [data?.settings.marquee?.words, tt, ui]);
 
-  // hero carousel
+  // hero carousel — no autoplay under reduced motion (the dots still work for
+  // manual control, and .bk-hero-slide drops its crossfade via a media query).
   const [slide, setSlide] = useState(0);
   useEffect(() => {
-    if (banners.length < 2) return;
+    if (banners.length < 2 || reduce) return;
     const t = setInterval(() => setSlide((s) => (s + 1) % banners.length), 5000);
     return () => clearInterval(t);
-  }, [banners.length]);
+  }, [banners.length, reduce]);
 
   const active = banners[slide];
 
@@ -67,7 +68,7 @@ export function Home() {
               className="max-w-2xl"
               initial={reduce ? false : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: EASE }}
             >
               {/* The brand, not the Turkmen title: under a Russian or English
                   locale a Turkmen kicker read as an untranslated leftover. */}

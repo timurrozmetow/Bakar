@@ -60,6 +60,11 @@
   --bk-bg: #f5f4f0;
   --bk-surface: #ffffff;
   --bk-surface-2: #efeee9;
+  /* Shimmer sweep highlight — must read as a LIGHT glint over surface-2 in both
+     themes. --bk-surface can't serve here: it's lighter than surface-2 in light
+     mode but darker in dark mode, which would invert the sweep. Translucent
+     white lightens over any base, tuned per theme. */
+  --bk-shimmer-hi: rgba(255, 255, 255, 0.6);
   --bk-text: #1a1917;
   --bk-muted: #6b6a63;
   --bk-line: rgba(20, 18, 16, 0.11);
@@ -89,6 +94,7 @@
   --bk-bg: #0e100e;
   --bk-surface: #181c18;
   --bk-surface-2: #20251f;
+  --bk-shimmer-hi: rgba(255, 255, 255, 0.07);
   --bk-text: #f1f0ea;
   --bk-muted: #a4a59c;
   --bk-line: rgba(255, 255, 255, 0.13);
@@ -330,17 +336,23 @@ a {
 .bk-loader-bar > i {
   display: block;
   height: 100%;
-  width: 0;
+  width: 38%;
   background: var(--bk-accent);
   border-radius: 4px;
-  animation: bk-load 0.9s var(--bk-ease) forwards;
+  /* Indeterminate: a short segment sweeps the track on a loop, so the loader
+     never claims completion. A fixed 0→100% fill that froze at full while the
+     mark kept spinning read as "is this hung?" on any slow lazy-chunk load.
+     Linear timing (not the brand ease-out) keeps the segment on-screen for most
+     of the cycle — an ease-out spends its slow tail parked off the right edge,
+     leaving the groove empty ~60% of the loop, which itself reads as a stall. */
+  animation: bk-load 1.1s linear infinite;
 }
 @keyframes bk-load {
-  0% {
-    width: 0;
+  from {
+    transform: translateX(-100%);
   }
-  100% {
-    width: 100%;
+  to {
+    transform: translateX(280%);
   }
 }
 .bk-loader-word {
@@ -355,9 +367,11 @@ a {
   .bk-loader-mark {
     animation: none;
   }
+  /* No moving — and no "full" — bar for reduced motion: a static 100% bar reads
+     as done/hung. Leave the neutral groove; the sr-only status carries state. */
   .bk-loader-bar > i {
     animation: none;
-    width: 100%;
+    display: none;
   }
 }
 
@@ -382,6 +396,64 @@ a {
   }
 }
 
+/* Skeleton shimmer — one directional sweep on the brand ease, over the
+   bg-surface-2 base the Skeleton sets. Replaces Tailwind's animate-pulse so the
+   whole app shares one placeholder look AND one reduced-motion gate (animate-pulse
+   is not disabled under reduced motion). The highlight (--bk-shimmer-hi) is a
+   translucent white tuned per theme, so the sweep reads as a light glint in both. */
+.bk-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    var(--bk-shimmer-hi) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: bk-shimmer 1.4s var(--bk-ease) infinite;
+}
+@keyframes bk-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Load-gated image fade. Img adds `is-loaded` once the image actually decodes,
+   so photos ease in instead of popping from the empty surface-2 box. An opacity
+   ANIMATION (not a transition) is deliberate: the packshots also carry a
+   `transition` utility for hover-scale, and a `transition: opacity` here would
+   clobber it. The LCP hero opts out via Img's `priority` prop — see HeroImage. */
+.bk-img {
+  opacity: 0;
+}
+.bk-img.is-loaded {
+  animation: bk-img-in 0.4s var(--bk-ease) forwards;
+}
+@keyframes bk-img-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-shimmer {
+    animation: none;
+    background-image: none;
+  }
+  /* Never leave an image stranded invisible for reduced-motion users. */
+  .bk-img {
+    opacity: 1;
+  }
+  .bk-img.is-loaded {
+    animation: none;
+  }
+}
+
 /* hero carousel */
 /* Slides hold a real <img> rather than a CSS background: a background image is
    invisible to the preload scanner, which made the LCP element wait for JS. */
@@ -399,5 +471,25 @@ a {
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+/* The first slide is the preloaded LCP image: it must stay opaque on first
+   paint, so HeroImage is NOT routed through Img (no .bk-img opacity:0 here). */
+@media (prefers-reduced-motion: reduce) {
+  .bk-hero-slide {
+    transition: none;
+  }
+}
+
+/* Press feedback — a subtle scale on :active so controls respond to touch,
+   which has no hover. The target elements already carry a `transition` utility
+   that includes transform, so this only supplies the pressed transform. Gated
+   to no-preference to stay reduced-motion-first. */
+@media (prefers-reduced-motion: no-preference) {
+  .bk-btn:active {
+    transform: scale(0.97);
+  }
+  .bk-press:active {
+    transform: scale(0.95);
+  }
 }
 
